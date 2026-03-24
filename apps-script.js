@@ -15,7 +15,7 @@ const HEADERS_UCAPAN = ["ID", "Nama Pengirim", "Ucapan", "Waktu"];
 // ============================================================
 //  🔐 SECRET KEY — GANTI DENGAN KATA SANDI BUATANMU SENDIRI
 //  Contoh: "UndanganBudi2026!" atau "N1k4h@nKita#Maret"
-//  JANGAN gunakan contoh di atas!
+//  JANGAN gunakan contoh di atas! Minimal 16 karakter.
 // ============================================================
 const SECRET_KEY = "Test@123";
 
@@ -31,7 +31,8 @@ function handleRequest(e) {
     const action = body.action || e.parameter.action;
 
     // Aksi publik — tidak butuh secret key
-    const PUBLIC_ACTIONS = ["getGuestByToken","submitRsvp","submitUcapan","getUcapan","getRsvpStats","getRsvpAll"];
+    // CATATAN: getRsvpAll dihapus dari sini karena memuat data pribadi tamu
+    const PUBLIC_ACTIONS = ["getGuestByToken", "submitRsvp", "submitUcapan", "getUcapan", "getRsvpStats"];
 
     if (!PUBLIC_ACTIONS.includes(action)) {
       if (!body.secretKey || body.secretKey !== SECRET_KEY) {
@@ -55,6 +56,8 @@ function handleRequest(e) {
       case "submitUcapan":    result = submitUcapan(body);     break;
       case "getUcapan":       result = getUcapanPublic();      break;
       case "getRsvpStats":    result = getRsvpStats();         break;
+      case "deleteRsvp":      result = deleteRsvp(body);       break;
+      case "deleteUcapan":    result = deleteUcapan(body);     break;
       default: result = { ok: false, msg: "Action tidak dikenal: " + action };
     }
     output.setContent(JSON.stringify(result));
@@ -76,108 +79,160 @@ function getGuests() {
   const s = getOrCreateSheet(SHEET_TAMU, HEADERS_TAMU);
   const d = s.getDataRange().getValues();
   if (d.length <= 1) return { ok: true, guests: [] };
-  return { ok: true, guests: d.slice(1).map(r => ({ id:r[0],nama:r[1],no:r[2],sent:r[3]===true||r[3]==="TRUE",addedAt:r[4] })) };
+  return { ok: true, guests: d.slice(1).map(r => ({ id: r[0], nama: r[1], no: r[2], sent: r[3] === true || r[3] === "TRUE", addedAt: r[4] })) };
 }
+
 function addGuest(b) {
+  // FIX: Validasi input
+  if (!b.nama || String(b.nama).trim().length === 0) return { ok: false, msg: "Nama tidak boleh kosong" };
+  if (String(b.nama).length > 100) return { ok: false, msg: "Nama terlalu panjang" };
+
   const s  = getOrCreateSheet(SHEET_TAMU, HEADERS_TAMU);
   const id = b.id || Utilities.getUuid();
   const d  = s.getDataRange().getValues();
-  for (let i=1;i<d.length;i++) if(d[i][0]===id) return {ok:false,msg:"ID sudah ada"};
-  s.appendRow([id, b.nama||"", b.no||"", false, new Date().toISOString()]);
-  return { ok: true, guest: { id, nama:b.nama, no:b.no, sent:false } };
+  for (let i = 1; i < d.length; i++) if (d[i][0] === id) return { ok: false, msg: "ID sudah ada" };
+  s.appendRow([id, String(b.nama).trim(), b.no || "", false, new Date().toISOString()]);
+  return { ok: true, guest: { id, nama: b.nama, no: b.no, sent: false } };
 }
+
 function updateStatus(b) {
   const s = getOrCreateSheet(SHEET_TAMU, HEADERS_TAMU);
   const d = s.getDataRange().getValues();
-  for (let i=1;i<d.length;i++) if(d[i][0]===b.id){ s.getRange(i+1,4).setValue(b.sent); return {ok:true}; }
-  return {ok:false,msg:"Tidak ditemukan"};
+  for (let i = 1; i < d.length; i++) {
+    if (d[i][0] === b.id) { s.getRange(i + 1, 4).setValue(b.sent); return { ok: true }; }
+  }
+  return { ok: false, msg: "Tidak ditemukan" };
 }
+
 function deleteGuest(b) {
   const s = getOrCreateSheet(SHEET_TAMU, HEADERS_TAMU);
   const d = s.getDataRange().getValues();
-  for (let i=1;i<d.length;i++) if(d[i][0]===b.id){ s.deleteRow(i+1); return {ok:true}; }
-  return {ok:false,msg:"Tidak ditemukan"};
+  for (let i = 1; i < d.length; i++) {
+    if (d[i][0] === b.id) { s.deleteRow(i + 1); return { ok: true }; }
+  }
+  return { ok: false, msg: "Tidak ditemukan" };
 }
+
 function getGuestByToken(b) {
-  if (!b.token) return {ok:false,msg:"Token kosong"};
+  if (!b.token) return { ok: false, msg: "Token kosong" };
   const s = getOrCreateSheet(SHEET_TAMU, HEADERS_TAMU);
   const d = s.getDataRange().getValues();
-  for (let i=1;i<d.length;i++) if(d[i][0]===b.token) return {ok:true,nama:d[i][1]};
-  return {ok:false,msg:"Tamu tidak ditemukan"};
+  for (let i = 1; i < d.length; i++) if (d[i][0] === b.token) return { ok: true, nama: d[i][1] };
+  return { ok: false, msg: "Tamu tidak ditemukan" };
 }
 
 // ── PENGATURAN ──────────────────────────────────────────────
 function getSettingsData() {
-  const s = getOrCreateSheet(SHEET_SETTINGS, ["Key","Value"]);
+  const s = getOrCreateSheet(SHEET_SETTINGS, ["Key", "Value"]);
   const d = s.getDataRange().getValues();
   const r = {};
   d.slice(1).forEach(row => { r[row[0]] = row[1]; });
-  return { ok:true, settings:r };
+  return { ok: true, settings: r };
 }
+
 function saveSettingsData(b) {
-  const s    = getOrCreateSheet(SHEET_SETTINGS, ["Key","Value"]);
-  const keys = ["couple","date","time","place","baseUrl","template",
-                 "mapsUrl","rek1Bank","rek1No","rek1Nama","rek2Bank","rek2No","rek2Nama"];
+  const s    = getOrCreateSheet(SHEET_SETTINGS, ["Key", "Value"]);
+  const keys = ["couple", "date", "time", "place", "baseUrl", "template",
+                 "mapsUrl", "rek1Bank", "rek1No", "rek1Nama", "rek2Bank", "rek2No", "rek2Nama"];
+
+  // FIX: Baca sheet SEKALI di luar loop — bukan berulang kali di dalam loop
+  const d = s.getDataRange().getValues();
+  const keyRowIndex = {};
+  for (let i = 1; i < d.length; i++) keyRowIndex[d[i][0]] = i + 1;
+
   keys.forEach(key => {
-    if (b[key]===undefined) return;
-    const d = s.getDataRange().getValues();
-    let found = false;
-    for (let i=1;i<d.length;i++) if(d[i][0]===key){ s.getRange(i+1,2).setValue(b[key]); found=true; break; }
-    if (!found) s.appendRow([key, b[key]]);
+    if (b[key] === undefined) return;
+    if (keyRowIndex[key]) {
+      s.getRange(keyRowIndex[key], 2).setValue(b[key]);
+    } else {
+      s.appendRow([key, b[key]]);
+    }
   });
-  return { ok:true };
+  return { ok: true };
 }
 
 // ── RSVP ───────────────────────────────────────────────────
 function submitRsvp(b) {
+  if (!b.idTamu) return { ok: false, msg: "ID Tamu tidak boleh kosong" };
+
   const s = getOrCreateSheet(SHEET_RSVP, HEADERS_RSVP);
   const d = s.getDataRange().getValues();
-  for (let i=1;i<d.length;i++) {
-    if (d[i][0]===b.idTamu) {
-      s.getRange(i+1,3).setValue(b.status);
-      s.getRange(i+1,4).setValue(b.jumlah||1);
-      s.getRange(i+1,5).setValue(b.catatan||"");
-      s.getRange(i+1,6).setValue(new Date().toISOString());
-      return {ok:true,updated:true};
+  for (let i = 1; i < d.length; i++) {
+    if (d[i][0] === b.idTamu) {
+      s.getRange(i + 1, 3).setValue(b.status);
+      s.getRange(i + 1, 4).setValue(b.jumlah || 1);
+      s.getRange(i + 1, 5).setValue(b.catatan || "");
+      s.getRange(i + 1, 6).setValue(new Date().toISOString());
+      return { ok: true, updated: true };
     }
   }
-  s.appendRow([b.idTamu||"", b.nama||"", b.status||"hadir", b.jumlah||1, b.catatan||"", new Date().toISOString()]);
-  return {ok:true,updated:false};
+  s.appendRow([b.idTamu, b.nama || "", b.status || "hadir", b.jumlah || 1, b.catatan || "", new Date().toISOString()]);
+  return { ok: true, updated: false };
 }
+
 function getRsvpAll() {
   const s = getOrCreateSheet(SHEET_RSVP, HEADERS_RSVP);
   const d = s.getDataRange().getValues();
-  if (d.length<=1) return {ok:true,rsvp:[]};
-  return {ok:true, rsvp: d.slice(1).map(r=>({idTamu:r[0],nama:r[1],status:r[2],jumlah:r[3],catatan:r[4],waktu:r[5]}))};
+  if (d.length <= 1) return { ok: true, rsvp: [] };
+  return { ok: true, rsvp: d.slice(1).map(r => ({ idTamu: r[0], nama: r[1], status: r[2], jumlah: r[3], catatan: r[4], waktu: r[5] })) };
 }
+
 function getRsvpStats() {
   const s = getOrCreateSheet(SHEET_RSVP, HEADERS_RSVP);
   const d = s.getDataRange().getValues();
-  let hadir=0,tidak=0,ragu=0;
+  let hadir = 0, tidak = 0, ragu = 0;
   d.slice(1).forEach(r => {
-    const st = (r[2]||"").toLowerCase();
-    if(st==="hadir") hadir+=parseInt(r[3])||1;
-    else if(st==="tidak") tidak++;
-    else if(st==="ragu") ragu++;
+    const st = (r[2] || "").toLowerCase();
+    if (st === "hadir") hadir += parseInt(r[3]) || 1;
+    else if (st === "tidak") tidak++;
+    else if (st === "ragu") ragu++;
   });
-  return {ok:true, hadir, tidak, ragu, total:d.length-1};
+  return { ok: true, hadir, tidak, ragu, total: d.length - 1 };
+}
+
+function deleteRsvp(b) {
+  const s = getOrCreateSheet(SHEET_RSVP, HEADERS_RSVP);
+  const d = s.getDataRange().getValues();
+  for (let i = 1; i < d.length; i++) {
+    if (d[i][0] === b.idTamu) { s.deleteRow(i + 1); return { ok: true }; }
+  }
+  return { ok: false, msg: "Tidak ditemukan" };
 }
 
 // ── UCAPAN ─────────────────────────────────────────────────
 function submitUcapan(b) {
+  // FIX: Validasi input — cegah ucapan kosong atau terlalu panjang
+  if (!b.ucapan || String(b.ucapan).trim().length === 0) return { ok: false, msg: "Ucapan tidak boleh kosong" };
+  if (String(b.ucapan).length > 500) return { ok: false, msg: "Ucapan terlalu panjang (maks. 500 karakter)" };
+  if (b.nama && String(b.nama).length > 100) return { ok: false, msg: "Nama terlalu panjang" };
+
   const s = getOrCreateSheet(SHEET_UCAPAN, HEADERS_UCAPAN);
-  s.appendRow([Utilities.getUuid(), b.nama||"Anonim", b.ucapan||"", new Date().toISOString()]);
-  return {ok:true};
+  s.appendRow([Utilities.getUuid(), b.nama || "Anonim", String(b.ucapan).trim(), new Date().toISOString()]);
+  return { ok: true };
 }
+
 function getUcapanPublic() {
   const s = getOrCreateSheet(SHEET_UCAPAN, HEADERS_UCAPAN);
   const d = s.getDataRange().getValues();
-  if (d.length<=1) return {ok:true,ucapan:[]};
-  return {ok:true, ucapan: d.slice(1).reverse().slice(0,50).map(r=>({id:r[0],nama:r[1],ucapan:r[2],waktu:r[3]}))};
+  if (d.length <= 1) return { ok: true, ucapan: [] };
+  // Ambil 50 ucapan terbaru (dari bawah) tanpa reverse seluruh array
+  const rows = d.slice(1);
+  const recent = rows.slice(Math.max(0, rows.length - 50)).reverse();
+  return { ok: true, ucapan: recent.map(r => ({ id: r[0], nama: r[1], ucapan: r[2], waktu: r[3] })) };
 }
+
 function getUcapanAll() {
   const s = getOrCreateSheet(SHEET_UCAPAN, HEADERS_UCAPAN);
   const d = s.getDataRange().getValues();
-  if (d.length<=1) return {ok:true,ucapan:[]};
-  return {ok:true, ucapan: d.slice(1).reverse().map(r=>({id:r[0],nama:r[1],ucapan:r[2],waktu:r[3]}))};
+  if (d.length <= 1) return { ok: true, ucapan: [] };
+  return { ok: true, ucapan: d.slice(1).reverse().map(r => ({ id: r[0], nama: r[1], ucapan: r[2], waktu: r[3] })) };
+}
+
+function deleteUcapan(b) {
+  const s = getOrCreateSheet(SHEET_UCAPAN, HEADERS_UCAPAN);
+  const d = s.getDataRange().getValues();
+  for (let i = 1; i < d.length; i++) {
+    if (d[i][0] === b.id) { s.deleteRow(i + 1); return { ok: true }; }
+  }
+  return { ok: false, msg: "Tidak ditemukan" };
 }

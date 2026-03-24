@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Undangan</title>
+<title>Management Dashboard — S & W</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <style>
 :root {
-  --gold: #c9a84c; --gold-light: #f0d080;
-  --dark: #0d0d0d; --card: #141414; --card2: #1a1a1a;
-  --border: #222; --text: #e0e0e0; --muted: #666; --green: #25D366;
+  --gold: #c9a84c; --gold-light: #f1d58d; --gold-dark: #8c6e2d;
+  --dark: #0a0a0a; --card: #141414; --card2: #1c1c1c;
+  --border: #2a2a2a; --text: #f0f0f0; --muted: #888; --green: #25D366; --red: #ff4d4d;
 }
 *{ box-sizing:border-box; margin:0; padding:0; }
-body{ font-family:'Segoe UI',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; }
+body{ font-family:'Outfit',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
 /* -- LOGIN SCREEN -- */
 #login-screen{
@@ -21,136 +19,171 @@ body{ font-family:'Segoe UI',sans-serif; background:var(--dark); color:var(--tex
 }
 #login-screen.hidden{ opacity:0; pointer-events:none; }
 .login-box{
-  width:100%; max-width:380px; padding:48px 40px;
+  width:100%; max-width:400px; padding:60px 40px;
   background:var(--card); border:1px solid var(--border);
+  border-radius:16px; box-shadow:0 20px 50px rgba(0,0,0,0.5);
+  text-align:center;
 }
-.login-logo{ font-size:32px; margin-bottom:24px; }
-.login-box h2{ font-size:22px; color:var(--gold-light); margin-bottom:6px; font-weight:400; }
-.login-box p{ font-size:13px; color:var(--muted); margin-bottom:32px; }
-.login-field{ margin-bottom:16px; }
-.login-field label{ display:block; font-size:12px; letter-spacing:.1em; color:var(--muted); margin-bottom:8px; text-transform:uppercase; }
-.login-field input{
-  width:100%; padding:12px 14px; background:#0a0a0a;
-  border:1px solid var(--border); color:var(--text);
-  font-size:14px; outline:none; transition:border .2s;
-}
-.login-field input:focus{ border-color:var(--gold); }
+.login-logo{ font-size:48px; margin-bottom:24px; color:var(--gold); }
+.login-box h2{ font-size:24px; color:var(--text); margin-bottom:8px; font-weight:600; }
+.login-box p{ font-size:14px; color:var(--muted); margin-bottom:32px; line-height:1.6; }
+.login-field{ margin-bottom:20px; text-align:left; }
+.login-field label{ margin-bottom:8px; color:var(--gold-light); }
 .login-btn{
-  width:100%; padding:14px; background:var(--gold); color:#0d0d0d;
-  border:none; font-size:13px; letter-spacing:.2em; text-transform:uppercase;
-  font-weight:600; cursor:pointer; margin-top:8px; transition:background .2s;
+  width:100%; padding:14px; background:var(--gold); color:#0a0a0a;
+  border:none; font-size:14px; letter-spacing:.1em; text-transform:uppercase;
+  font-weight:700; border-radius:8px; cursor:pointer; margin-top:10px; transition:all 0.3s;
 }
-.login-btn:hover{ background:var(--gold-light); }
-.login-err{ font-size:12px; color:#e05; margin-top:12px; min-height:18px; text-align:center; }
+.login-btn:hover{ background:var(--gold-light); transform:translateY(-2px); box-shadow:0 10px 20px rgba(201,168,76,0.3); }
+.login-err{ font-size:13px; color:var(--red); margin-top:16px; min-height:20px; font-weight:500; }
 .login-attempts{ font-size:11px; color:var(--muted); text-align:center; margin-top:8px; }
 
 /* -- HEADER -- */
 header{
-  background:var(--card); border-bottom:1px solid var(--border);
-  padding:16px 28px; display:flex; align-items:center; gap:14px;
-  position:sticky; top:0; z-index:50;
+  background:rgba(20,20,20,0.8); border-bottom:1px solid var(--border);
+  padding:14px 24px; display:flex; align-items:center; gap:14px;
+  position:sticky; top:0; z-index:100; backdrop-filter:blur(10px);
 }
-header h1{ font-size:17px; color:var(--gold-light); font-weight:500; flex:1; }
+header h1{ font-size:16px; color:var(--gold-light); font-weight:500; flex:1; letter-spacing:0.02em; }
 .conn-badge{
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:11px; padding:4px 12px; border-radius:20px; font-weight:600;
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; padding:6px 14px; border-radius:30px; font-weight:600;
+  transition:all 0.3s; border:1px solid transparent;
 }
-.conn-badge.connected{ background:#1a3a1a; color:#4ecc78; }
-.conn-badge.disconnected{ background:#3a1a1a; color:#cc4e4e; }
-.conn-badge.loading{ background:#2a2a1a; color:#cccc4e; }
-.dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+.conn-badge.connected{ background:rgba(40,204,120,0.1); color:#4ecc78; border-color:rgba(40,204,120,0.2); }
+.conn-badge.disconnected{ background:rgba(255,77,77,0.1); color:var(--red); border-color:rgba(255,77,77,0.2); }
+.conn-badge.loading{ background:rgba(201,168,76,0.1); color:var(--gold); border-color:rgba(201,168,76,0.2); }
+.dot{ width:6px; height:6px; border-radius:50%; background:currentColor; position:relative; }
+.conn-badge.loading .dot { animation: pulse 1s infinite alternate; }
+@keyframes pulse { from { opacity: 0.3; transform:scale(0.8); } to { opacity: 1; transform:scale(1.2); } }
+
 .logout-btn{
-  background:none; border:1px solid var(--border); color:var(--muted);
-  padding:6px 14px; font-size:12px; cursor:pointer; transition:all .2s;
+  background:transparent; border:1px solid var(--border); color:var(--muted);
+  padding:6px 16px; font-size:12px; border-radius:6px; cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:6px;
 }
-.logout-btn:hover{ border-color:#e05; color:#e05; }
+.logout-btn:hover{ border-color:var(--red); color:var(--red); background:rgba(255,77,77,0.05); }
 
 /* -- LAYOUT -- */
 .container{ max-width:1200px; margin:0 auto; padding:24px 20px; }
-.tabs{ display:flex; gap:6px; margin-bottom:22px; flex-wrap:wrap; }
+.tabs{ display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; border-bottom:1px solid var(--border); padding-bottom:12px; }
 .tab{
-  padding:8px 20px; border-radius:6px; font-size:13px; font-weight:500;
-  cursor:pointer; border:1px solid transparent; transition:all .2s;
-  background:var(--card); color:var(--muted);
+  padding:10px 22px; border-radius:8px; font-size:13px; font-weight:500;
+  cursor:pointer; border:1px solid transparent; transition:all 0.3s;
+  background:transparent; color:var(--muted);
+  display:flex; align-items:center; gap:8px;
 }
-.tab.active{ background:var(--gold); color:#0d0d0d; border-color:var(--gold); }
-.tab:not(.active):hover{ border-color:var(--gold); color:var(--gold); }
-.panel{ display:none; }
-.panel.active{ display:block; }
+.tab i { font-size:16px; opacity:0.7; }
+.tab.active{ background:rgba(201,168,76,0.1); color:var(--gold-light); border-color:rgba(201,168,76,0.3); }
+.tab.active i { color:var(--gold); opacity:1; }
+.tab:not(.active):hover{ background:rgba(255,255,255,0.03); color:var(--text); }
+.panel{ display:none; flex-direction:column; gap:24px; }
+.panel.active{ display:flex; }
 
-/* -- CARD -- */
-.card{ background:var(--card); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px; }
-.card h3{ color:var(--gold-light); font-size:14px; margin-bottom:14px; font-weight:500; }
 
-/* -- STATS -- */
-.stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
-@media(max-width:600px){ .stats{grid-template-columns:repeat(2,1fr);} }
-.stat-box{ background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; text-align:center; }
-.stat-box .n{ font-size:30px; font-weight:300; color:var(--gold-light); font-family:Georgia,serif; }
-.stat-box .l{ font-size:11px; color:var(--muted); margin-top:4px; letter-spacing:.1em; text-transform:uppercase; }
-
-/* -- FORMS -- */
-label{ font-size:12px; color:var(--muted); display:block; margin-bottom:5px; letter-spacing:.05em; }
-input,textarea,select{
-  width:100%; padding:9px 12px; border-radius:6px;
-  border:1px solid var(--border); background:#0a0a0a;
-  color:var(--text); font-size:13px; outline:none; transition:border .2s;
+/* -- CARDS -- */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:32px; /* Increased from 24px */
+  border-radius:16px;
+  position:relative;
+  transition:all 0.3s;
 }
-input:focus,textarea:focus{ border-color:var(--gold); }
-textarea{ resize:vertical; min-height:80px; }
-.fg{ margin-bottom:13px; }
-.form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:13px; }
-.form-full{ grid-column:1/-1; }
-@media(max-width:560px){ .form-grid{grid-template-columns:1fr;} }
+.card:hover{ border-color:var(--gold-muted); box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+.card-title{
+  display:flex; align-items:center; gap:12px;
+  font-size:16px; font-weight:700; color:var(--gold);
+  margin-bottom:28px; /* Increased from 20px */
+  letter-spacing:0.02em;
+}
+
+/* -- FORM ELEMENTS -- */
+.add-row{
+  display:grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap:20px;
+  align-items:end;
+}
+@media (max-width: 768px) {
+  .add-row { grid-template-columns: 1fr; }
+}
+
+/* -- STATS GRID -- */
+.stats-grid{ 
+  display:grid; 
+  grid-template-columns:repeat(4, 1fr); 
+  gap:16px; 
+  margin-bottom:24px;
+}
+@media (max-width: 992px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+
+.stat-box{
+  background:var(--card); border:1px solid var(--border);
+  padding:24px; text-align:center; border-radius:16px;
+  transition:transform 0.3s, border-color 0.3s;
+}
+.stat-box:hover{ transform:translateY(-5px); border-color:var(--gold); }
+.stat-val{ font-size:32px; font-weight:800; color:var(--gold); display:block; margin-bottom:4px; }
+.stat-lbl{ font-size:10px; text-transform:uppercase; color:var(--muted); letter-spacing:0.1em; font-weight:700; }
+
+/* -- TABLE & LISTS -- */
+.table-container{ margin-top:24px; overflow-x:auto; border-radius:12px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; min-width:800px; }
+th{ background:var(--card2); text-align:left; padding:18px 20px; font-size:11px; text-transform:uppercase; color:var(--gold-muted); letter-spacing:0.1em; border-bottom:1px solid var(--border); }
+td{ padding:18px 20px; border-bottom:1px solid var(--border); vertical-align:middle; transition:background 0.2s; }
+tr:hover td{ background:rgba(255,255,255,0.02); }
+
+.bulk-bar{
+  display:flex; align-items:center; gap:16px;
+  margin-bottom:24px; padding:16px 20px;
+  background:rgba(255,255,255,0.02); border-radius:12px;
+  border:1px solid var(--border);
+}
+.bulk-info{ font-size:13px; color:var(--gold-light); font-weight:600; margin-right:auto; }
 
 /* -- BUTTONS -- */
 .btn{
-  padding:8px 16px; border-radius:6px; font-size:13px; font-weight:500;
-  cursor:pointer; border:none; transition:all .2s;
-  display:inline-flex; align-items:center; gap:6px;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 20px; border-radius:10px; font-size:13px; font-weight:700;
+  cursor:pointer; transition:all 0.3s; border:none; color:#0a0a0a;
+  font-family:'Outfit', sans-serif;
 }
-.btn:disabled{ opacity:.5; cursor:not-allowed; }
-.btn-gold{ background:var(--gold); color:#0d0d0d; }
-.btn-gold:hover:not(:disabled){ background:var(--gold-light); }
-.btn-outline{ background:transparent; border:1px solid var(--gold); color:var(--gold); }
-.btn-outline:hover:not(:disabled){ background:var(--gold); color:#0d0d0d; }
-.btn-green{ background:var(--green); color:#fff; }
-.btn-green:hover:not(:disabled){ background:#1ebe5d; }
-.btn-red{ background:transparent; border:1px solid #e05; color:#e05; }
-.btn-red:hover:not(:disabled){ background:#e05; color:#fff; }
-.btn-gray{ background:var(--card2); color:var(--muted); border:1px solid var(--border); }
-.btn-sm{ padding:5px 12px; font-size:12px; }
+.btn-sm{ padding:8px 14px; font-size:12px; }
+.btn-icon{ padding:10px; border-radius:10px; width:40px; height:40px; }
+.btn-primary{ background:var(--gold); }
+.btn-primary:hover{ background:var(--gold-light); transform:translateY(-2px); box-shadow:0 5px 15px rgba(201,168,76,0.3); }
+.btn-outline{ background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn-outline:hover{ border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.05); }
+.btn-danger{ background:var(--red); color:white; }
+.btn-danger:hover{ opacity:0.9; transform:translateY(-2px); box-shadow:0 5px 15px rgba(255,77,77,0.3); }
+.btn-wa{ background:#25d366; color:white; }
+.btn-wa:hover{ opacity:0.9; transform:translateY(-2px); box-shadow:0 5px 15px rgba(37,211,102,0.3); }
 
-/* -- ADD ROW -- */
-.add-row{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
-.add-row input{ flex:1; min-width:160px; }
+/* -- SEARCH & FILTER -- */
+.search-row{ display:flex; gap:16px; margin-bottom:24px; }
+.search-row input{ flex:3; }
+.search-row select{ flex:1; }
 
-/* -- BULK BAR -- */
-.bulk-bar{
-  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-  padding:10px 14px; background:#0a0a0a; border-radius:6px; margin-bottom:14px;
+/* -- FORMS -- */
+label{ font-size:11px; color:var(--muted); display:block; margin-bottom:6px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+input,textarea,select{
+  width:100%; padding:11px 16px; border-radius:8px;
+  border:1px solid var(--border); background:#050505;
+  color:var(--text); font-size:14px; outline:none; transition:all .2s;
 }
-.bulk-bar span{ font-size:12px; color:var(--muted); }
+input:focus,textarea:focus{ border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.1); }
+textarea{ resize:vertical; min-height:100px; line-height:1.6; }
 
-/* -- SEARCH -- */
-.search-row{ display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-.search-row input{ flex:1; min-width:180px; }
-
-/* -- TABLE -- */
-.table-wrap{ overflow-x:auto; }
-table{ width:100%; border-collapse:collapse; font-size:13px; }
-th{ background:#0a0a0a; color:var(--gold); padding:9px 11px; text-align:left; font-size:12px; font-weight:500; }
-td{ padding:9px 11px; border-bottom:1px solid #1a1a1a; vertical-align:middle; }
-tr:last-child td{ border-bottom:none; }
-tr:hover td{ background:#1a1a1a44; }
 
 /* -- BADGE -- */
-.badge{ font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600; }
-.badge-sent{ background:#1a3a1a; color:#4ecc78; }
-.badge-unsent{ background:#3a1a1a; color:#cc4e4e; }
-.badge-hadir{ background:#1a3a1a; color:#4ecc78; }
-.badge-tidak{ background:#3a1a1a; color:#cc4e4e; }
-.badge-ragu{ background:#2a2a1a; color:#cccc4e; }
+.badge{ font-size:10px; padding:4px 10px; border-radius:30px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; display:inline-flex; align-items:center; gap:4px; }
+.badge-sent{ background:rgba(40,204,120,0.1); color:#4ecc78; }
+.badge-unsent{ background:rgba(255,77,77,0.1); color:var(--red); }
+.badge-hadir{ background:rgba(40,204,120,0.1); color:#4ecc78; }
+.badge-tidak{ background:rgba(255,77,77,0.1); color:var(--red); }
+.badge-ragu{ background:rgba(204,204,78,0.1); color:#cccc4e; }
 
 /* -- SETUP PANEL -- */
 .setup-box{
@@ -189,16 +222,25 @@ tr:hover td{ background:#1a1a1a44; }
 
 /* -- TOAST -- */
 .toast{
-  position:fixed; bottom:20px; right:20px;
-  background:var(--gold); color:#0d0d0d; padding:10px 18px;
-  border-radius:6px; font-weight:600; font-size:13px;
-  opacity:0; transition:opacity .3s; pointer-events:none; z-index:400;
+  position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+  background:var(--gold); color:#0a0a0a; padding:12px 24px;
+  border-radius:10px; font-weight:700; font-size:14px;
+  opacity:0; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events:none; z-index:1000;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  display:flex; align-items:center; gap:10px;
 }
-.toast.show{ opacity:1; }
+.toast.show{ opacity:1; bottom:40px; }
 
 /* -- RSVP & UCAPAN TABS -- */
-.rsvp-list{ display:flex; flex-direction:column; gap:1px; background:var(--border); max-height:420px; overflow-y:auto; }
-.rsvp-row{ background:var(--card); padding:14px 16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.rsvp-list{ display:flex; flex-direction:column; gap:12px; }
+.rsvp-row{ 
+  background:rgba(255,255,255,0.02); padding:20px; 
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap; 
+  border-radius:12px; border:1px solid var(--border);
+  transition:all 0.3s;
+}
+.rsvp-row:hover{ border-color:var(--gold-muted); background:rgba(255,255,255,0.04); }
 .ucapan-list-dash{ display:flex; flex-direction:column; gap:1px; background:var(--border); max-height:460px; overflow-y:auto; }
 .ucapan-row{ background:var(--card); padding:14px 16px; }
 .ucapan-row .uc-name{ font-size:12px; color:var(--gold); margin-bottom:4px; }
@@ -213,18 +255,18 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
 <!-- == LOGIN SCREEN == -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo"> </div>
+    <div class="login-logo"><i class="ri-heart-pulse-fill"></i></div>
     <h2>Dashboard Undangan</h2>
-    <p>Masuk untuk mengelola daftar tamu dan pengiriman undangan</p>
+    <p>Kelola daftar tamu dan monitoring RSVP secara real-time melalui panel kendali eksklusif.</p>
     <div class="login-field">
       <label>Username</label>
-      <input type="text" id="inp-user" placeholder="Username" autocomplete="username" onkeydown="if(event.key==='Enter')login()">
+      <input type="text" id="inp-user" placeholder="Masukkan username" autocomplete="username" onkeydown="if(event.key==='Enter')login()">
     </div>
     <div class="login-field">
       <label>Password</label>
-      <input type="password" id="inp-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+      <input type="password" id="inp-pass" placeholder="Masukkan password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
     </div>
-    <button class="login-btn" onclick="login()">Masuk -></button>
+    <button class="login-btn" onclick="login()">Masuk ke Dashboard <i class="ri-arrow-right-line"></i></button>
     <p class="login-err" id="login-err"></p>
     <p class="login-attempts" id="login-attempts"></p>
   </div>
@@ -232,62 +274,75 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
 
 <!-- == HEADER == -->
 <header>
-  <span style="font-size:20px"> </span>
-  <h1>Dashboard Undangan</h1>
+  <i class="ri-dashboard-3-line" style="font-size:20px;color:var(--gold)"></i>
+  <h1>Management Dashboard</h1>
   <div class="conn-badge loading" id="conn-badge"><div class="dot"></div> Menghubungkan...</div>
-  <button class="logout-btn" onclick="logout()">Keluar</button>
+  <button class="logout-btn" onclick="logout()"><i class="ri-logout-box-r-line"></i> Keluar</button>
 </header>
 
 <div class="container">
 
   <!-- SETUP BOX -->
   <div class="setup-box" id="setup-box">
-    <h3>{set} Hubungkan ke Google Sheets</h3>
-    <p>Tempel URL Apps Script dan secret key yang sudah dikonfigurasi.</p>
+    <h3><i class="ri-settings-4-line"></i> Hubungkan ke Google Sheets</h3>
+    <p>Tempel URL Apps Script dan secret key yang sudah dikonfigurasi pada file apps-script.js Anda.</p>
     <div class="setup-row">
       <input type="text" id="inp-script-url" placeholder="https://script.google.com/macros/s/.../exec" style="flex:2">
-      <input type="password" id="inp-secret-key" placeholder="  Secret Key" style="flex:1;min-width:140px">
-      <button class="btn btn-gold" onclick="connectSheet()">[link] Hubungkan</button>
+      <input type="password" id="inp-secret-key" placeholder=" Secret Key" style="flex:1;min-width:140px">
+      <button class="btn btn-primary" onclick="connectSheet()"><i class="ri-link"></i> Hubungkan</button>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('tamu',this)">[tamu] Tamu</div>
-    <div class="tab" onclick="switchTab('rsvp',this)">[v] RSVP</div>
-    <div class="tab" onclick="switchTab('ucapan',this)">  Ucapan</div>
-    <div class="tab" onclick="switchTab('pengaturan',this)">{set} Pengaturan</div>
-    <div class="tab" onclick="switchTab('akun',this)">[kunci] Keamanan</div>
+    <div class="tab active" onclick="switchTab('tamu',this)"><i class="ri-group-line"></i> Tamu</div>
+    <div class="tab" onclick="switchTab('rsvp',this)"><i class="ri-mail-check-line"></i> RSVP</div>
+    <div class="tab" onclick="switchTab('ucapan',this)"><i class="ri-message-3-line"></i> Ucapan</div>
+    <div class="tab" onclick="switchTab('pengaturan',this)"><i class="ri-settings-3-line"></i> Pengaturan</div>
+    <div class="tab" onclick="switchTab('akun',this)"><i class="ri-lock-password-line"></i> Keamanan</div>
   </div>
 
   <!-- === TAMU === -->
   <div class="panel active" id="tab-tamu">
-    <div class="stats" id="stats-bar"></div>
-    <div class="card">
-      <h3>  Tambah Tamu</h3>
-      <div class="add-row">
-        <input type="text" id="inp-nama" placeholder="Nama tamu (contoh: Keluarga Bpk. Wayan)" onkeydown="if(event.key==='Enter')addGuest()">
-        <input type="text" id="inp-no" placeholder="No. WA (628xxx)">
-        <button class="btn btn-gold" id="btn-add" onclick="addGuest()">  Tambah</button>
-        <button class="btn btn-gray btn-sm" onclick="refreshGuests()" title="Refresh dari Sheets"> </button>
+    <div class="stats-grid" id="stats-bar"></div>
+    <!-- Card Tamu -->
+      <div class="card">
+        <div class="card-title"><i class="ri-user-add-line"></i> Tambah Tamu</div>
+        <div class="add-row">
+          <div style="flex:2">
+            <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;">Nama Tamu</label>
+            <input type="text" id="inp-nama" placeholder="Contoh: Keluarga Bpk. Wayan">
+          </div>
+          <div style="flex:1">
+            <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;">No. WhatsApp (Optional)</label>
+            <input type="text" id="inp-no" placeholder="Contoh: 628xxxx">
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary" id="btn-add" onclick="addGuest()"><i class="ri-add-line"></i> Tambah</button>
+            <button class="btn btn-outline btn-icon" onclick="resetForm()" title="Reset"><i class="ri-refresh-line"></i></button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="search-row">
-        <input type="text" id="search-inp" placeholder="  Cari nama..." oninput="renderTable()">
-        <select id="filter-status" onchange="renderTable()">
-          <option value="">Semua</option>
-          <option value="unsent">Belum Kirim</option>
-          <option value="sent">Sudah Kirim</option>
-        </select>
-      </div>
-      <div class="bulk-bar">
-        <span id="bulk-count">0 dipilih</span>
-        <button class="btn btn-outline btn-sm" onclick="selectAll()">Semua</button>
-        <button class="btn btn-outline btn-sm" onclick="deselectAll()">Batal</button>
-        <button class="btn btn-green btn-sm" onclick="bulkSend()">[kirim] Kirim WA Dipilih</button>
-        <button class="btn btn-red btn-sm" onclick="deleteSelected()">  Hapus</button>
-      </div>
+
+      <!-- Card List -->
+      <div class="card">
+        <div class="search-row">
+          <input type="text" id="inp-search" placeholder="Cari nama tamu..." oninput="renderGuests()">
+          <select id="sel-filter" onchange="renderGuests()">
+            <option value="all">Semua Status</option>
+            <option value="sent">Sudah Terkirim</option>
+            <option value="unsent">Belum Terkirim</option>
+          </select>
+          <button class="btn btn-outline btn-icon" onclick="refreshGuests()" title="Refresh Data"><i class="ri-refresh-line"></i></button>
+        </div>
+
+        <div class="bulk-bar" id="bulk-bar" style="display:none">
+          <span class="bulk-info" id="bulk-count">0 dipilih</span>
+          <button class="btn btn-outline btn-sm" onclick="bulkSelect(true)">Pilih Semua</button>
+          <button class="btn btn-outline btn-sm" onclick="bulkSelect(false)">Batal</button>
+          <button class="btn btn-wa btn-sm" onclick="bulkWA()"><i class="ri-whatsapp-line"></i> Kirim WA Dipilih</button>
+          <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="ri-delete-bin-line"></i> Hapus</button>
+        </div>
       <div class="table-wrap">
         <table>
           <thead><tr>
@@ -298,7 +353,7 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
         </table>
       </div>
       <div id="empty-state" class="empty-state" style="display:none">
-        <div class="icon">[tamu]</div>
+        <div class="icon"><i class="ri-group-line" style="font-size:48px;opacity:0.2"></i></div>
         <p id="empty-msg">Belum ada tamu.</p>
       </div>
     </div>
@@ -306,9 +361,20 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
 
   <!-- === RSVP === -->
   <div class="panel" id="tab-rsvp">
-    <div class="stats" id="rsvp-stats"></div>
+    <div class="stats-grid" id="rsvp-stats"></div>
     <div class="card">
-      <h3>[daftar] Data Konfirmasi Kehadiran</h3>
+      <div class="card-title"><i class="ri-mail-check-line"></i> Konfirmasi Kehadiran</div>
+      
+      <div class="search-row">
+        <input type="text" id="rsvp-search" placeholder="Cari nama tamu..." oninput="renderRsvp()">
+        <select id="rsvp-filter" onchange="renderRsvp()">
+          <option value="all">Semua Status</option>
+          <option value="hadir">Hadir</option>
+          <option value="tidak">Tidak Hadir</option>
+          <option value="ragu">Ragu-ragu</option>
+        </select>
+      </div>
+
       <div class="rsvp-list" id="rsvp-list">
         <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Memuat data...</div>
       </div>
@@ -318,8 +384,14 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
   <!-- === UCAPAN === -->
   <div class="panel" id="tab-ucapan">
     <div class="card">
-      <h3>  Semua Ucapan & Doa</h3>
-      <div class="ucapan-list-dash" id="ucapan-list">
+      <div class="card-title"><i class="ri-chat-quote-line"></i> Ucapan & Doa Masuk</div>
+      
+      <div class="search-row">
+        <input type="text" id="ucapan-search" placeholder="Cari nama atau isi pesan..." oninput="renderUcapan()">
+        <button class="btn btn-outline btn-sm" onclick="loadUcapan()"><i class="ri-refresh-line"></i> Refresh</button>
+      </div>
+
+      <div class="rsvp-list" id="ucapan-list">
         <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Memuat data...</div>
       </div>
     </div>
@@ -328,34 +400,34 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
   <!-- === PENGATURAN === -->
   <div class="panel" id="tab-pengaturan">
     <div class="card">
-      <h3>[undangan] Detail Acara</h3>
+      <div class="card-title"><i class="ri-heart-pulse-line"></i> Detail Acara Utama</div>
       <div class="form-grid">
         <div class="fg"><label>Nama Pasangan</label><input type="text" id="set-couple" placeholder="contoh: Budi & Ani"></div>
         <div class="fg"><label>Hari & Tanggal</label><input type="text" id="set-date" placeholder="Rabu, 25 Maret 2026"></div>
         <div class="fg"><label>Waktu</label><input type="text" id="set-time" placeholder="15.00 - Selesai"></div>
         <div class="fg"><label>Tempat</label><input type="text" id="set-place" placeholder="Jl. ..."></div>
-        <div class="fg form-full"><label>Base URL Undangan (tanpa ?to=...)</label><input type="text" id="set-baseurl" placeholder="https://undangan-saya.my.id"></div>
-        <div class="fg form-full"><label>URL Google Maps (link embed atau share)</label><input type="text" id="set-mapsurl" placeholder="https://maps.google.com/..."></div>
+        <div class="fg form-full"><label>Base URL Undangan (Tanpa ?to=...)</label><input type="text" id="set-baseurl" placeholder="https://undangan-saya.my.id"></div>
+        <div class="fg form-full"><label>URL Google Maps (Link Embed/Share)</label><input type="text" id="set-mapsurl" placeholder="https://maps.google.com/..."></div>
       </div>
     </div>
     <div class="card">
-      <h3>  Rekening (Kado Digital)</h3>
+      <div class="card-title"><i class="ri-bank-card-line"></i> Kado Digital & Hadiah</div>
       <div class="form-grid">
-        <div class="fg"><label>Bank 1</label><input type="text" id="set-rek1bank" placeholder="BCA"></div>
-        <div class="fg"><label>No. Rekening 1</label><input type="text" id="set-rek1no" placeholder="1234567890"></div>
+        <div class="fg"><label>Nama Bank 1</label><input type="text" id="set-rek1bank" placeholder="BCA"></div>
+        <div class="fg"><label>Nomor Rekening 1</label><input type="text" id="set-rek1no" placeholder="1234567890"></div>
         <div class="fg form-full"><label>Atas Nama 1</label><input type="text" id="set-rek1nama" placeholder="Nama Pemilik Rekening"></div>
-        <div class="fg"><label>Bank 2</label><input type="text" id="set-rek2bank" placeholder="Mandiri"></div>
-        <div class="fg"><label>No. Rekening 2</label><input type="text" id="set-rek2no" placeholder="0987654321"></div>
+        <div class="fg"><label>Nama Bank 2</label><input type="text" id="set-rek2bank" placeholder="Mandiri"></div>
+        <div class="fg"><label>Nomor Rekening 2</label><input type="text" id="set-rek2no" placeholder="0987654321"></div>
         <div class="fg form-full"><label>Atas Nama 2</label><input type="text" id="set-rek2nama" placeholder="Nama Pemilik Rekening"></div>
       </div>
     </div>
     <div class="card">
-      <h3>  Template Pesan WA</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Placeholder: <code>{nama}</code> <code>{pasangan}</code> <code>{tanggal}</code> <code>{waktu}</code> <code>{tempat}</code> <code>{link}</code></p>
+      <div class="card-title"><i class="ri-whatsapp-line"></i> Template Undangan WhatsApp</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px;background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;">Placeholder Aktif: <code>{nama}</code> <code>{pasangan}</code> <code>{tanggal}</code> <code>{waktu}</code> <code>{tempat}</code> <code>{link}</code></p>
       <textarea id="set-template" rows="12"></textarea>
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-gold" onclick="saveSettings()">[save] Simpan Pengaturan</button>
-        <button class="btn btn-outline" onclick="resetTemplate()">  Reset Template</button>
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="saveSettings()"><i class="ri-save-line"></i> Simpan Semua Perubahan</button>
+        <button class="btn btn-outline" onclick="resetTemplate()"><i class="ri-refresh-line"></i> Reset Default Template</button>
       </div>
     </div>
   </div>
@@ -363,21 +435,21 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
   <!-- === KEAMANAN === -->
   <div class="panel" id="tab-akun">
     <div class="card">
-      <h3>[kunci] Ubah Kredensial Login</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.7">
-        Username dan password disimpan secara terenkripsi di browser. Pastikan menggunakan kombinasi yang kuat dan tidak mudah ditebak.
-      </p>
+      <div class="card-title"><i class="ri-lock-password-line"></i> Kredensial Dasbor</div>
+      <div class="search-row" style="margin-bottom:28px">
+        <p style="font-size:13px;color:var(--muted);line-height:1.7"> Username dan password dasbor disimpan secara aman di browser Anda. Sebaiknya ganti password default setelah pengaturan awal selesai.</p>
+      </div>
       <div class="form-grid">
         <div class="fg"><label>Username Baru</label><input type="text" id="new-user" placeholder="Username baru" autocomplete="new-password"></div>
-        <div class="fg"><label>Password Baru</label><input type="password" id="new-pass" placeholder="Password baru (min. 8 karakter)" autocomplete="new-password"></div>
-        <div class="fg form-full"><label>Konfirmasi Password Baru</label><input type="password" id="new-pass2" placeholder="Ulangi password baru" autocomplete="new-password"></div>
+        <div class="fg"><label>Password Baru</label><input type="password" id="new-pass" placeholder="Password baru (Min. 8 Karakter)" autocomplete="new-password"></div>
+        <div class="fg form-full"><label>Konfirmasi Password</label><input type="password" id="new-pass2" placeholder="Ulangi password baru" autocomplete="new-password"></div>
       </div>
-      <button class="btn btn-gold" onclick="changeCredentials()">[kunci] Simpan Kredensial Baru</button>
+      <button class="btn btn-primary" onclick="changeCredentials()" style="margin-top:20px"><i class="ri-shield-keyhole-line"></i> Update Kredensial</button>
     </div>
     <div class="card">
-      <h3>[link] Koneksi Sheets</h3>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Untuk memutuskan koneksi atau mengganti URL Apps Script, klik tombol di bawah.</p>
-      <button class="btn btn-red" onclick="disconnectSheet()">  Putus Koneksi Sheets</button>
+      <div class="card-title"><i class="ri-links-line"></i> Pengaturan Koneksi Database</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Jika Anda ingin memutuskan hubungan atau mengganti URL Google Sheets (Apps Script), silakan gunakan tombol di bawah.</p>
+      <button class="btn btn-danger" onclick="disconnectSheet()"><i class="ri-plug-line"></i> Putus Koneksi Database</button>
     </div>
   </div>
 
@@ -386,12 +458,12 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
 <!-- MODAL PREVIEW -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
-    <h3>  Preview Pesan WA</h3>
+    <h3><i class="ri-file-search-line"></i> Preview Pesan WA</h3>
     <div class="wa-preview" id="modal-content"></div>
     <div class="modal-actions">
-      <button class="btn btn-green" id="modal-wa-btn">[hp] Buka WhatsApp</button>
-      <button class="btn btn-outline" onclick="copyMsg()">[daftar] Salin</button>
-      <button class="btn btn-gray" onclick="document.getElementById('modal').classList.remove('show')">[x] Tutup</button>
+      <button class="btn btn-wa" id="modal-wa-btn"><i class="ri-whatsapp-line"></i> Buka WhatsApp</button>
+      <button class="btn btn-outline" onclick="copyMsg()"><i class="ri-clipboard-line"></i> Salin</button>
+      <button class="btn btn-outline" onclick="document.getElementById('modal').classList.remove('show')"><i class="ri-close-line"></i> Tutup</button>
     </div>
   </div>
 </div>
@@ -408,9 +480,9 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
 const DEFAULT_USER = "admin";
 const DEFAULT_PASS = "undangan2026";
 
-let loginAttempts = 0;
+let loginAttempts = parseInt(ls('login_attempts')||'0');
 const MAX_ATTEMPTS = 5;
-let lockUntil = 0;
+let lockUntil = parseInt(ls('login_lock_until')||'0');
 
 async function hashStr(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -436,14 +508,17 @@ async function login() {
 
   if (hashUser === savedUser && hashPass === savedPass) {
     loginAttempts = 0;
+    ls('login_attempts', '0'); ls('login_lock_until', '0');
     document.getElementById('login-screen').classList.add('hidden');
     ls('dash_auth', '1');
     initDashboard();
   } else {
     loginAttempts++;
+    ls('login_attempts', String(loginAttempts));
     const remaining = MAX_ATTEMPTS - loginAttempts;
     if (loginAttempts >= MAX_ATTEMPTS) {
-      lockUntil = Date.now() + 60000; // lock 60 detik
+      lockUntil = Date.now() + 60000;
+      ls('login_lock_until', String(lockUntil));
       document.getElementById('login-err').textContent = 'Terlalu banyak percobaan. Dikunci 60 detik.';
       document.getElementById('login-attempts').textContent = '';
     } else {
@@ -531,27 +606,31 @@ async function fetchAll() {
 function connectSheet() {
   const url = document.getElementById('inp-script-url').value.trim();
   const key = document.getElementById('inp-secret-key').value.trim();
-  if (!url.startsWith('https://script.google.com')) { alert('URL tidak valid!'); return; }
-  if (!key) { alert('Secret key wajib diisi!'); return; }
+  if (!url.startsWith('https://script.google.com')) { showToast('⚠ URL tidak valid!'); return; }
+  if (!key) { showToast('⚠ Secret key wajib diisi!'); return; }
   ls('wagen_script_url', url); ls('wagen_secret_key', key);
   scriptUrl = url; secretKey = key;
   setConn('loading','[jam] Menghubungkan...');
   fetchAll();
 }
 function disconnectSheet() {
-  if (!confirm('Putus koneksi Sheets?')) return;
   ls('wagen_script_url',''); ls('wagen_secret_key','');
   scriptUrl=''; secretKey=''; isConnected=false;
   document.getElementById('inp-script-url').value='';
   document.getElementById('inp-secret-key').value='';
   document.getElementById('setup-box').style.display='';
   setConn('disconnected','  Belum terhubung');
+  showToast('Koneksi diputus');
 }
 function setConn(state, label) {
   const el = document.getElementById('conn-badge');
   el.className = 'conn-badge ' + state;
   el.innerHTML = `<div class="dot"></div> ${label}`;
   isConnected = state === 'connected';
+  if (state === 'disconnected') {
+    document.getElementById('tamu-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">Hubungkan ke Google Sheets untuk memuat data tamu</td></tr>';
+    document.getElementById('empty-state').style.display = 'none';
+  }
 }
 
 // ====================================================
@@ -572,52 +651,82 @@ async function api(action, body={}) {
 async function fetchGuests() {
   try {
     const d = await api('getGuests');
-    if (d.ok) { guests = d.guests; setConn('connected','[v] Terhubung'); document.getElementById('setup-box').style.display='none'; }
+
+    if (d.ok) { 
+      guests = d.guests; 
+      setConn('connected','[v] Terhubung'); 
+      document.getElementById('setup-box').style.display='none'; 
+    }
     else throw new Error(d.msg);
   } catch(e) { setConn('disconnected','  Gagal'); showToast('[x] '+e.message); }
-  renderTable(); renderStats();
+  renderGuests(); renderStats();
 }
 async function refreshGuests() { setConn('loading','[jam]'); await fetchGuests(); showToast('  Data diperbarui'); }
 
 async function addGuest() {
+  if (!isConnected) { showToast('[!] Hubungkan database terlebih dahulu!'); return; }
   const nama = document.getElementById('inp-nama').value.trim();
   const no   = document.getElementById('inp-no').value.trim().replace(/\D/g,'');
-  if (!nama) { alert('Nama wajib diisi!'); return; }
-  if (!isConnected) { alert('Belum terhubung ke Sheets!'); return; }
+  if (!nama) { showToast('[!] Nama tamu wajib diisi!'); return; }
+  
   const btn = document.getElementById('btn-add');
-  btn.disabled=true; btn.textContent='Menyimpan...';
+  const oldText = btn.innerHTML;
+  btn.disabled = true; 
+  btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Menyimpan...';
+  
   try {
-    const id = uuid();
+    const id = nanoid();
     const d  = await api('addGuest', {id, nama, no});
     if (d.ok) {
       guests.push({id, nama, no, sent:false});
-      document.getElementById('inp-nama').value='';
-      document.getElementById('inp-no').value='';
-      showToast('[v] Tamu ditambahkan!');
-      renderTable(); renderStats();
-    } else alert('Gagal: '+d.msg);
-  } catch(e) { alert('Error: '+e.message); }
-  btn.disabled=false; btn.textContent='  Tambah';
+      resetForm();
+      showToast('[v] Tamu berhasil ditambahkan!');
+      renderGuests(); renderStats();
+    } else {
+      showToast('[x] Gagal: ' + d.msg);
+    }
+  } catch(e) { 
+    showToast('[x] Error: ' + e.message); 
+  } finally {
+    btn.disabled = false; 
+    btn.innerHTML = oldText;
+  }
 }
 
 async function deleteGuest(id) {
-  if (!confirm('Hapus tamu ini?')) return;
-  await api('deleteGuest',{id});
-  guests = guests.filter(g=>g.id!==id);
-  showToast('  Tamu dihapus'); renderTable(); renderStats();
+  if (!window.confirm('Hapus tamu ini?')) return;
+  try {
+    const r = await api('deleteGuest', {id});
+    if (r.ok) {
+      guests = guests.filter(g=>g.id!==id);
+      showToast('Tamu dihapus');
+      renderGuests(); renderStats();
+    } else {
+      showToast('✗ Gagal hapus: ' + (r.msg || ''));
+    }
+  } catch(e) { showToast('✗ Error: ' + e.message); }
 }
 async function deleteSelected() {
   const ids = [...document.querySelectorAll('.chk-row:checked')].map(c=>c.dataset.id);
   if (!ids.length) return;
   if (!confirm(`Hapus ${ids.length} tamu?`)) return;
-  for (const id of ids) { await api('deleteGuest',{id}); guests=guests.filter(g=>g.id!==id); }
-  showToast(`  ${ids.length} tamu dihapus`); renderTable(); renderStats();
+  let ok = 0;
+  for (const id of ids) {
+    try {
+      const r = await api('deleteGuest', {id});
+      if (r.ok) { guests = guests.filter(g=>g.id!==id); ok++; }
+    } catch(e) { /* lanjut ke berikutnya */ }
+  }
+  showToast(`${ok} dari ${ids.length} tamu dihapus`);
+  renderGuests(); renderStats();
 }
 async function markSent(id) {
   const g = guests.find(x=>x.id===id);
-  if (!g) return; g.sent=true;
-  await api('updateStatus',{id, sent:true});
-  renderTable(); renderStats();
+  if (!g) return;
+  g.sent = true;
+  renderGuests(); renderStats();
+  try { await api('updateStatus', {id, sent: true}); }
+  catch(e) { /* update lokal tetap tersimpan, sinkronisasi gagal */ }
 }
 
 // ====================================================
@@ -650,9 +759,17 @@ function getSettingsFromForm() {
 }
 async function saveSettings() {
   const s = getSettingsFromForm();
-  await api('saveSettings', s);
-  ls('wagen_settings', JSON.stringify(s));
-  showToast('[v] Pengaturan disimpan ke Sheets!');
+  try {
+    const r = await api('saveSettings', s);
+    if (r.ok) {
+      ls('wagen_settings', JSON.stringify(s));
+      showToast('✓ Pengaturan disimpan ke Sheets!');
+    } else {
+      showToast('✗ Gagal menyimpan: ' + (r.msg || 'Error tidak diketahui'));
+    }
+  } catch(e) {
+    showToast('✗ Gagal menyimpan: ' + e.message);
+  }
 }
 function resetTemplate() {
   document.getElementById('set-template').value = DEFAULT_TEMPLATE;
@@ -661,51 +778,45 @@ function resetTemplate() {
 // ====================================================
 //  RSVP
 // ====================================================
-async function loadRsvp() { return loadRsvpWithCache(); }
-async function _loadRsvpOrig() {
-  try {
-    const [rd, sd] = await Promise.all([api('getRsvpAll'), api('getRsvpStats')]);
-    if (sd.ok) {
-      document.getElementById('rsvp-stats').innerHTML = `
-        <div class="stat-box"><div class="n" style="color:#4ecc78">${sd.hadir}</div><div class="l">Hadir</div></div>
-        <div class="stat-box"><div class="n" style="color:#cc4e4e">${sd.tidak}</div><div class="l">Tidak Hadir</div></div>
-        <div class="stat-box"><div class="n" style="color:#cccc4e">${sd.ragu}</div><div class="l">Masih Ragu</div></div>
-        <div class="stat-box"><div class="n">${sd.total}</div><div class="l">Total Respons</div></div>`;
-    }
-    if (rd.ok) {
-      const list = document.getElementById('rsvp-list');
-      if (!rd.rsvp.length) { list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Belum ada konfirmasi kehadiran</div>'; return; }
-      list.innerHTML = rd.rsvp.map(r => {
-        const bc = r.status==='hadir'?'badge-hadir':r.status==='tidak'?'badge-tidak':'badge-ragu';
-        return `<div class="rsvp-row">
-          <span class="badge ${bc}">${r.status}</span>
-          <strong style="flex:1">${esc(r.nama)}</strong>
-          <span style="font-size:12px;color:var(--muted)">${r.jumlah} orang</span>
-          ${r.catatan?`<span style="font-size:12px;color:var(--muted);flex:2">${esc(r.catatan)}</span>`:''}
-        </div>`;
-      }).join('');
-    }
-  } catch(e) { showToast('Gagal muat RSVP'); }
-}
 
 // ====================================================
-//  UCAPAN
+//  UCAPAN & DOA Handlers
 // ====================================================
+let ucapanDataCache = [];
+
 async function loadUcapan() {
   try {
     const d = await api('getUcapanAll');
-    const list = document.getElementById('ucapan-list');
-    if (!d.ok || !d.ucapan.length) {
-      list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Belum ada ucapan masuk</div>';
-      return;
+    if (d.ok) {
+      ucapanDataCache = d.ucapan || [];
+      renderUcapan();
     }
-    list.innerHTML = d.ucapan.map(u=>`
-      <div class="ucapan-row">
-        <p class="uc-name">${esc(u.nama)}</p>
-        <p class="uc-text">"${esc(u.ucapan)}"</p>
-        <p class="uc-time">${fmtTime(u.waktu)}</p>
-      </div>`).join('');
-  } catch(e) {}
+  } catch (e) { showToast('Gagal memuat ucapan'); }
+}
+
+function renderUcapan() {
+  const list = document.getElementById('ucapan-list');
+  const query = document.getElementById('ucapan-search').value.toLowerCase();
+
+  const filtered = ucapanDataCache.filter(u => {
+    return (u.nama||'').toLowerCase().includes(query) || (u.ucapan||'').toLowerCase().includes(query);
+  });
+
+  if (!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Belum ada ucapan yang masuk atau tidak ditemukan.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(u => `
+    <div class="rsvp-row">
+      <div style="display:flex;align-items:center;gap:10px;width:100%;">
+        <strong style="flex:1;font-size:15px;color:var(--gold-light);">${esc(u.nama)}</strong>
+        <button class="btn btn-outline btn-icon" style="width:36px;height:36px;color:var(--red);border-color:rgba(255,77,77,0.2);" onclick="deleteUcapan('${u.id}')" title="Hapus Ucapan"><i class="ri-delete-bin-line"></i></button>
+      </div>
+      <div style="margin-top:4px;font-size:14px;color:var(--text);line-height:1.6;width:100%;background:rgba(255,255,255,0.01);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);">"${esc(u.ucapan)}"</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;width:100%;text-align:right;">— ${new Date(u.waktu).toLocaleString('id-ID')}</div>
+    </div>
+  `).join('');
 }
 
 // ====================================================
@@ -735,7 +846,7 @@ function quickSend(id) {
 }
 async function bulkSend() {
   const ids=[...document.querySelectorAll('.chk-row:checked')].map(c=>c.dataset.id);
-  if(!ids.length){alert('Pilih minimal 1 tamu!');return;}
+  if(!ids.length){showToast('⚠ Pilih minimal 1 tamu!');return;}
   if(!confirm(`Buka ${ids.length} tab WA?`)) return;
   ids.forEach((id,i)=>{
     const g=guests.find(x=>x.id===id); if(!g||!g.no) return;
@@ -749,40 +860,43 @@ function closeModal(e) { if(e.target.id==='modal') document.getElementById('moda
 //  TABLE
 // ====================================================
 function getFiltered() {
-  const q =document.getElementById('search-inp').value.toLowerCase();
-  const st=document.getElementById('filter-status').value;
-  const rv=document.getElementById('filter-rsvp') ? document.getElementById('filter-rsvp').value : '';
-  const rsvpMap={};
-  rsvpDataCache.forEach(r=>rsvpMap[r.idTamu]=r.status);
-  return guests.filter(g=>{
-    const mq=g.nama.toLowerCase().includes(q);
-    const ms=!st||(st==='sent'?g.sent:!g.sent);
-    const rsvpStatus=rsvpMap[g.id]||'belum';
-    const mr=!rv||(rv==='belum'?!rsvpMap[g.id]:rsvpStatus===rv);
-    return mq&&ms&&mr;
+  const q = document.getElementById('inp-search')?.value.toLowerCase() || '';
+  const st = document.getElementById('sel-filter')?.value || 'all';
+  return guests.filter(g => {
+    const mq = g.nama.toLowerCase().includes(q);
+    const ms = st === 'all' || (st === 'sent' ? g.sent : !g.sent);
+    return mq && ms;
   });
 }
-function renderTable() {
-  const s=getSettingsFromForm();
-  const filtered=getFiltered();
-  const tbody=document.getElementById('tamu-tbody');
-  const empty=document.getElementById('empty-state');
-  if(!filtered.length){ tbody.innerHTML=''; empty.style.display='block'; document.getElementById('empty-msg').textContent=guests.length?'Tidak ada yang cocok.':'Belum ada tamu.'; return; }
-  empty.style.display='none';
-  tbody.innerHTML=filtered.map((g,i)=>{
-    const link=(s.baseUrl||'...')+'?to='+g.id;
-    const badge=g.sent?`<span class="badge badge-sent">[v] Terkirim</span>`:`<span class="badge badge-unsent">Belum</span>`;
+function renderGuests() {
+  if (!isConnected) return;
+  const s = getSettingsFromForm();
+  const filtered = getFiltered();
+  const tbody = document.getElementById('tamu-tbody');
+  const empty = document.getElementById('empty-state');
+  
+  if (!filtered.length) { 
+    tbody.innerHTML = ''; 
+    empty.style.display = 'block'; 
+    document.getElementById('empty-msg').textContent = guests.length ? 'Tidak ada yang cocok.' : 'Belum ada tamu.'; 
+    return; 
+  }
+  
+  empty.style.display = 'none';
+  tbody.innerHTML = filtered.map((g, i) => {
+    const link = (s.baseUrl || '...') + '?to=' + g.id;
+    const badge = g.sent ? `<span class="badge badge-sent"><i class="ri-check-double-line"></i> Terkirim</span>` : `<span class="badge badge-unsent"><i class="ri-time-line"></i> Belum</span>`;
     return `<tr>
       <td><input type="checkbox" class="chk-row" data-id="${g.id}" onchange="updateBulkCount()"></td>
-      <td style="color:var(--muted)">${i+1}</td>
-      <td><strong>${esc(g.nama)}</strong></td>
-      <td style="color:var(--muted);font-size:12px">${g.no||'<em>-</em>'}</td>
-      <td><div class="link-cell" title="${link}">${link}</div></td>
+      <td style="color:var(--muted);font-weight:500;">${i + 1}</td>
+      <td><strong style="font-size:14px;letter-spacing:0.01em;">${esc(g.nama)}</strong></td>
+      <td style="color:var(--muted);font-size:12px;font-family:'Source Code Pro',monospace;">${g.no || '<em>-</em>'}</td>
+      <td><div class="link-cell" title="${link}" style="font-family:'Source Code Pro',monospace;">${link}</div></td>
       <td>${badge}</td>
-      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="previewGuest('${g.id}')"> </button>
-        ${g.no?`<button class="btn btn-green btn-sm" onclick="quickSend('${g.id}')">[kirim]</button>`:''}
-        <button class="btn btn-red btn-sm" onclick="deleteGuest('${g.id}')"> </button>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="previewGuest('${g.id}')" title="Preview Pesan"><i class="ri-eye-line"></i></button>
+        ${g.no ? `<button class="btn btn-wa btn-sm" onclick="quickSend('${g.id}')" title="Kirim Langsung"><i class="ri-whatsapp-line"></i></button>` : ''}
+        <button class="btn btn-danger btn-sm" onclick="deleteGuest('${g.id}')" title="Hapus"><i class="ri-delete-bin-line"></i></button>
       </div></td>
     </tr>`;
   }).join('');
@@ -790,23 +904,27 @@ function renderTable() {
 function renderStats() {
   const total=guests.length, sent=guests.filter(g=>g.sent).length, unsent=total-sent;
   document.getElementById('stats-bar').innerHTML=`
-    <div class="stat-box"><div class="n">${total}</div><div class="l">Total Tamu</div></div>
-    <div class="stat-box"><div class="n" style="color:#4ecc78">${sent}</div><div class="l">Terkirim</div></div>
-    <div class="stat-box"><div class="n" style="color:#cc4e4e">${unsent}</div><div class="l">Belum Kirim</div></div>
-    <div class="stat-box"><div class="n">${total?Math.round(sent/total*100):0}%</div><div class="l">Progress</div></div>`;
+    <div class="stat-box"><span class="stat-val">${total}</span><span class="stat-lbl">Total Tamu</span></div>
+    <div class="stat-box"><span class="stat-val" style="color:#4ecc78">${sent}</span><span class="stat-lbl">Terkirim</span></div>
+    <div class="stat-box"><span class="stat-val" style="color:#cc4e4e">${unsent}</span><span class="stat-lbl">Belum Kirim</span></div>
+    <div class="stat-box"><span class="stat-val">${total?Math.round(sent/total*100):0}%</span><span class="stat-lbl">Progress</span></div>`;
 }
 
 // ====================================================
 //  UTILS
 // ====================================================
+// LocalStorage helper
+function ls(key, val) {
+  if (val === undefined) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+  try { if (!val) localStorage.removeItem(key); else localStorage.setItem(key, val); } catch(e) {}
+}
 function nanoid(){
   const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
   const arr=new Uint8Array(10);
   crypto.getRandomValues(arr);
   return Array.from(arr).map(b=>chars[b%64]).join('');
 }
-function uuid(){ return nanoid(); }
-function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} }
+function resetForm(){ document.getElementById('inp-nama').value=''; document.getElementById('inp-no').value=''; }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 function selectAll(){ document.querySelectorAll('.chk-row').forEach(c=>c.checked=true); updateBulkCount(); }
 function deselectAll(){ document.querySelectorAll('.chk-row').forEach(c=>c.checked=false); updateBulkCount(); }
@@ -821,6 +939,10 @@ function switchTab(name,el){
   if(name==='rsvp') loadRsvp();
   if(name==='ucapan') loadUcapan();
 }
+
+// Alias untuk tombol bulk-bar
+function bulkWA() { bulkSend(); }
+function bulkDelete() { deleteSelected(); }
 
 // ============================================================
 //  IMPORT / EXPORT
@@ -880,21 +1002,22 @@ function parseImportRows(rows){
 
 async function confirmImport(){
   if(!importData.length) return;
-  if(!isConnected){alert('Belum terhubung ke Sheets!');return;}
-  const btn=document.querySelector('#import-preview .btn-gold');
-  btn.disabled=true; btn.textContent='Mengimpor...';
+  if(!isConnected){showToast('⚠ Belum terhubung ke Sheets!');return;}
+  const btn=document.querySelector('#import-preview .btn-primary, #import-preview .btn-gold');
+  if(btn){ btn.disabled=true; btn.textContent='Mengimpor...'; }
   let ok=0, skip=0;
   for(const item of importData){
     try{
-      const id=uuid();
+      const id=nanoid();
       const r=await api('addGuest',{id,nama:item.nama,no:item.no});
       if(r.ok){guests.push({id,nama:item.nama,no:item.no,sent:false});ok++;}
       else skip++;
     }catch(e){skip++;}
   }
   showToast(`Import selesai: ${ok} berhasil, ${skip} dilewati`);
+  if(btn){ btn.disabled=false; btn.textContent='Import Sekarang'; }
   cancelImport();
-  renderTable(); renderStats();
+  renderGuests(); renderStats();
 }
 
 function cancelImport(){
@@ -943,31 +1066,50 @@ function downloadTemplate(){
 }
 
 // Override getRsvpAll untuk cache data RSVP (dipakai di export)
-const _origLoadRsvp = typeof loadRsvp !== 'undefined' ? loadRsvp : null;
-async function loadRsvpWithCache(){
-  try{
-    const [rd,sd]=await Promise.all([api('getRsvpAll'),api('getRsvpStats')]);
-    if(rd.ok) rsvpDataCache=rd.rsvp||[];
-    if(sd.ok){
-      document.getElementById('rsvp-stats').innerHTML=`
-        <div class="stat-box"><div class="n" style="color:#4ecc78">${sd.hadir}</div><div class="l">Hadir</div></div>
-        <div class="stat-box"><div class="n" style="color:#cc4e4e">${sd.tidak}</div><div class="l">Tidak Hadir</div></div>
-        <div class="stat-box"><div class="n" style="color:#cccc4e">${sd.ragu}</div><div class="l">Masih Ragu</div></div>
-        <div class="stat-box"><div class="n">${sd.total}</div><div class="l">Total Respons</div></div>`;
+async function loadRsvp() {
+  try {
+    const [rd, sd] = await Promise.all([api('getRsvpAll'), api('getRsvpStats')]);
+    if (rd.ok) rsvpDataCache = rd.rsvp || [];
+    if (sd.ok) {
+      document.getElementById('rsvp-stats').innerHTML = `
+        <div class="stat-box"><div class="stat-val" style="color:#4ecc78">${sd.hadir}</div><div class="stat-lbl">Hadir</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:var(--red)">${sd.tidak}</div><div class="stat-lbl">Tidak Hadir</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#cccc4e">${sd.ragu}</div><div class="stat-lbl">Masih Ragu</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:var(--gold)">${sd.total}</div><div class="stat-lbl">Total Respons</div></div>`;
     }
-    if(rd.ok){
-      const list=document.getElementById('rsvp-list');
-      if(!rd.rsvp.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Belum ada konfirmasi kehadiran</div>';return;}
-      list.innerHTML=rd.rsvp.map(r=>{
-        const bc=r.status==='hadir'?'badge-hadir':r.status==='tidak'?'badge-tidak':'badge-ragu';
-        return `<div class="rsvp-row"><span class="badge ${bc}">${r.status}</span><strong style="flex:1">${esc(r.nama)}</strong><span style="font-size:12px;color:var(--muted)">${r.jumlah} orang</span>${r.catatan?`<span style="font-size:12px;color:var(--muted);flex:2">${esc(r.catatan)}</span>`:''}</div>`;
-      }).join('');
-    }
-  }catch(e){showToast('Gagal muat RSVP');}
+    renderRsvp();
+  } catch (e) { showToast('Gagal muat RSVP'); }
 }
 
-// Override switchTab untuk gunakan loadRsvpWithCache
-const origSwitchTab=switchTab;
+function renderRsvp() {
+  const list = document.getElementById('rsvp-list');
+  const query = document.getElementById('rsvp-search').value.toLowerCase();
+  const filter = document.getElementById('rsvp-filter').value;
+
+  const filtered = rsvpDataCache.filter(r => {
+    const mSearch = (r.nama||'').toLowerCase().includes(query);
+    const mFilter = filter === 'all' || r.status === filter;
+    return mSearch && mFilter;
+  });
+
+  if (!filtered.length) {
+    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Tidak ada data RSVP ditemukan</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => {
+    const icon = r.status === 'hadir' ? 'ri-checkbox-circle-line' : r.status === 'tidak' ? 'ri-close-circle-line' : 'ri-question-line';
+    const bc = r.status === 'hadir' ? 'badge-hadir' : r.status === 'tidak' ? 'badge-tidak' : 'badge-ragu';
+    return `
+      <div class="rsvp-row">
+        <span class="badge ${bc}"><i class="${icon}"></i> ${r.status}</span>
+        <strong style="flex:1;font-size:15px;color:var(--gold-light);">${esc(r.nama)}</strong>
+        <span style="font-size:12px;color:var(--muted);background:var(--card2);padding:6px 12px;border-radius:8px;font-weight:700;border:1px solid var(--border);">${r.jumlah} Orang</span>
+        <button class="btn btn-outline btn-icon" style="width:36px;height:36px;color:var(--red);border-color:rgba(255,77,77,0.2);" onclick="deleteRsvp('${r.idTamu}')" title="Hapus"><i class="ri-delete-bin-line"></i></button>
+        ${r.catatan ? `<div style="width:100%;margin-top:4px;padding:16px;background:rgba(255,255,255,0.02);border-radius:10px;font-size:13px;color:var(--text);line-height:1.6;border-left:3px solid var(--gold);">${esc(r.catatan)}</div>` : ''}
+      </div>`;
+  }).join('');
+}
 
 // ====================================================
 //  BOOT
@@ -982,6 +1124,33 @@ const origSwitchTab=switchTab;
     if (!ls('dash_pass')) ls('dash_pass', await hashStr(DEFAULT_PASS));
   }
 })();
+/* --- MODERASI --- */
+async function deleteRsvp(idTamu){
+  if(!confirm('Hapus data RSVP ini?')) return;
+  try {
+    const rd = await api('deleteRsvp', {idTamu});
+    if(rd.ok){
+      rsvpDataCache = rsvpDataCache.filter(r => r.idTamu !== idTamu);
+      showToast('RSVP dihapus');
+      renderRsvp();
+    } else {
+      showToast('✗ Gagal hapus: ' + (rd.msg || ''));
+    }
+  } catch(e) { showToast('✗ Error: ' + e.message); }
+}
+async function deleteUcapan(id){
+  if(!confirm('Hapus ucapan ini?')) return;
+  try {
+    const rd = await api('deleteUcapan', {id});
+    if(rd.ok){
+      ucapanDataCache = ucapanDataCache.filter(u => u.id !== id);
+      showToast('Ucapan dihapus');
+      renderUcapan();
+    } else {
+      showToast('✗ Gagal hapus: ' + (rd.msg || ''));
+    }
+  } catch(e) { showToast('✗ Error: ' + e.message); }
+}
 </script>
 </body>
 </html>

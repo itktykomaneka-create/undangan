@@ -5,11 +5,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Undangan Pernikahan - Sena &amp; Widya</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
-    rel="stylesheet">
+  <title>Wedding Invitation — S & W</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0a0a;
@@ -2160,6 +2158,7 @@
       time: "14.00", place: "Br. Grokgak Gg. Bima No. 5 Sempidi, Mengwi, Badung"
     };
     let guestToken = null, guestNama = "", settings = Object.assign({}, STATIC);
+    let cdTimer = null; // Global timer for countdown
     // --- PENGATURAN DATA & LOADER ---
     let assetsReady = false, dataReady = false, loaderTimer = null;
 
@@ -2332,10 +2331,8 @@
       if (p1) { ['cover-p1', 'h-p1'].forEach(id => document.getElementById(id).textContent = id.startsWith('h-') ? p1.split(' ')[0] : p1); }
       if (p2) { ['cover-p2', 'h-p2'].forEach(id => document.getElementById(id).textContent = id.startsWith('h-') ? p2.split(' ')[0] : p2); }
       if (s.date) { document.getElementById('cover-date').textContent = s.date; parseHeroDate(s.date); }
-      ['rek1-bank', 'rek1-no', 'rek1-nama', 'rek2-bank', 'rek2-no', 'rek2-nama'].forEach(id => {
-        const k = id.replace('-', '').replace('rek1', 'rek1').replace('rek2', 'rek2');
-        const mapK = { 'rek1bank': 'rek1Bank', 'rek1no': 'rek1No', 'rek1nama': 'rek1Nama', 'rek2bank': 'rek2Bank', 'rek2no': 'rek2No', 'rek2nama': 'rek2Nama' };
-        const key = mapK[id.replace('-', '')];
+      const rekMap = { 'rek1-bank': 'rek1Bank', 'rek1-no': 'rek1No', 'rek1-nama': 'rek1Nama', 'rek2-bank': 'rek2Bank', 'rek2-no': 'rek2No', 'rek2-nama': 'rek2Nama' };
+      Object.entries(rekMap).forEach(([id, key]) => {
         if (s[key]) document.getElementById(id).textContent = s[key];
       });
       if (s.place) document.getElementById('ev-place').innerHTML = s.place.replace(/,\s*/g, ',<br>');
@@ -2343,14 +2340,13 @@
       startCountdown(s.date, s.time);
     }
     function parseHeroDate(d) {
-      const months = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
-      const lower = d.toLowerCase(), p = (d.split(',')[1] || d).trim();
+      if (!d) return;
+      const p = (d.split(',')[1] || d).trim();
       const num = (p.match(/\d+/) || [])[0], words = p.replace(/\d+/g, '').trim().split(' ').filter(Boolean);
       if (num) document.getElementById('h-datenum').textContent = num;
       if (words.length >= 2) document.getElementById('h-monthyear').textContent = (words[0] + ' \u00b7 ' + words[1]).toUpperCase();
     }
 
-    let cdTimer = null;
     function startCountdown(dateStr, timeStr) {
       if (cdTimer) clearInterval(cdTimer);
       if (!dateStr) return;
@@ -2428,33 +2424,50 @@
       btn.disabled = true; btn.textContent = 'Mengirim...';
       try {
         const r = await api('submitRsvp', { idTamu: guestToken || ('guest-' + Date.now()), nama, status, jumlah, catatan });
-        if (r.ok) { showToast('Konfirmasi kehadiran terkirim!'); document.getElementById('rsvp-note').textContent = 'Terima kasih telah mengkonfirmasi kehadiran Anda'; btn.textContent = 'Terkirim'; await Promise.all([loadRsvpStats(), loadRsvpSlideshow()]); }
-        else { showToast('Gagal: ' + r.msg); btn.disabled = false; btn.textContent = 'Konfirmasi Kehadiran'; }
-      } catch (e) { showToast('Terjadi kesalahan, coba lagi'); btn.disabled = false; btn.textContent = 'Konfirmasi Kehadiran'; }
+        if (r.ok) {
+          // Jika ada pesan/ucapan, simpan juga ke sheet Ucapan agar tampil di chat
+          if (catatan) {
+            try { await api('submitUcapan', { nama, ucapan: catatan }); } catch(e) { /* abaikan */ }
+          }
+          showToast('Konfirmasi kehadiran terkirim!');
+          document.getElementById('rsvp-note').textContent = 'Terima kasih telah mengkonfirmasi kehadiran Anda';
+          btn.textContent = 'Terkirim';
+          await Promise.all([loadRsvpStats(), loadRsvpSlideshow()]);
+        } else {
+          showToast('Gagal: ' + r.msg);
+          btn.disabled = false;
+          btn.textContent = 'Konfirmasi Kehadiran';
+        }
+      } catch (e) {
+        showToast('Terjadi kesalahan, coba lagi');
+        btn.disabled = false;
+        btn.textContent = 'Konfirmasi Kehadiran';
+      }
     }
 
     // --- AMBIL DATA UCAPAN DARI SPREADSHEET ---
     async function loadRsvpSlideshow() {
       try {
-        const r = await api('getRsvpAll');
-        if (r.ok && r.rsvp) {
-          // Hanya tampilkan pesan yang tidak kosong
-          const valid = r.rsvp.filter(i => i.catatan && i.catatan.trim());
-          buildChat(valid);
+        // Gunakan getUcapan (public endpoint, tidak perlu secretKey)
+        const r = await api('getUcapan');
+        if (r.ok && r.ucapan) {
+          buildChat(r.ucapan);
         }
-      } catch (e) { console.error('Gagal memuat ucapan:', e); }
+      } catch (e) { /* Ucapan gagal dimuat, abaikan */ }
     }
 
     function buildChat(items) {
       const container = document.getElementById('chat-list');
-      if (!items || items.length === 0) {
+      // Filter hanya ucapan yang tidak kosong
+      const valid = (items || []).filter(i => (i.ucapan || i.catatan || '').trim());
+      if (!valid.length) {
         container.innerHTML = '<div style="text-align:center;padding:100px 40px;opacity:0.5;font-style:italic;">Belum ada ucapan dari tamu</div>';
         container.style.animation = 'none';
         return;
       }
 
       // Sort: Terbaru di atas
-      const list = [...items].sort((a, b) => {
+      const list = [...valid].sort((a, b) => {
         const da = new Date(a.waktu || 0), db = new Date(b.waktu || 0);
         return db - da;
       });
@@ -2464,9 +2477,8 @@
         <div class="chat-bubble ${idx % 2 === 1 ? 'me' : ''}">
           <div class="chat-header">
             <span class="chat-name">${esc(item.nama || 'Tamu')}</span>
-            <span class="chat-status ${(item.status || 'Hadir').toLowerCase().replace(/\s/g, '')}">${item.status || 'Hadir'}</span>
           </div>
-          <div class="chat-msg">"${esc(item.catatan)}"</div>
+          <div class="chat-msg">"${esc(item.ucapan || item.catatan || '')}"</div>
           <span class="chat-date">${fmtDate(item.waktu)}</span>
         </div>
       `;
