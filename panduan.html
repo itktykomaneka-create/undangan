@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan - Sistem Undangan Digital</title>
+<style>
+:root {
+  --bg:#0d0d0d; --card:#141414; --border:#222;
+  --gold:#c9a84c; --gold-l:#f0d080;
+  --text:#e0e0e0; --muted:#777;
+  --green:#4ecc78; --red:#e05555;
+  --serif:Georgia,serif; --sans:'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(13,13,13,.95);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;overflow-x:auto;}
+.nav-logo{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:17px;padding:14px 0;margin-right:24px;white-space:nowrap;flex-shrink:0;}
+.nav-link{padding:14px 12px;font-size:12px;letter-spacing:.1em;color:var(--muted);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;flex-shrink:0;}
+.nav-link:hover,.nav-link.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+.wrap{max-width:860px;margin:0 auto;padding:56px 24px 100px;}
+
+.hero{text-align:center;padding:56px 24px 72px;border-bottom:1px solid var(--border);margin-bottom:56px;}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;border:1px solid #2a2800;padding:4px 14px;border-radius:20px;margin-bottom:22px;}
+.hero h1{font-family:var(--serif);font-size:clamp(28px,5vw,46px);font-weight:400;font-style:italic;color:var(--gold-l);margin-bottom:14px;line-height:1.25;}
+.hero p{font-size:14px;color:var(--muted);max-width:500px;margin:0 auto 32px;}
+.chip-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 14px;font-size:13px;font-family:monospace;color:var(--gold);}
+
+.section{margin-bottom:64px;scroll-margin-top:72px;}
+.sec-num{font-size:11px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.section > h2{font-family:var(--serif);font-size:clamp(20px,3.5vw,30px);font-weight:400;font-style:italic;color:var(--gold-l);margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.sec-intro{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.8;}
+
+.steps{display:flex;flex-direction:column;}
+.step{display:flex;gap:0;}
+.step-line{display:flex;flex-direction:column;align-items:center;margin-right:22px;}
+.step-num{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#0d0d0d;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;}
+.step-connector{width:1px;flex:1;background:var(--border);min-height:20px;}
+.step:last-child .step-connector{display:none;}
+.step-body{padding-bottom:36px;flex:1;min-width:0;}
+.step-body h3{font-size:16px;color:var(--gold-l);margin-bottom:10px;margin-top:5px;}
+.step-body p{color:var(--text);margin-bottom:10px;font-size:14px;}
+.step-body ul{padding-left:20px;color:var(--text);font-size:14px;}
+.step-body ul li{margin-bottom:5px;}
+
+pre{background:#080808;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:16px 18px;font-size:13px;font-family:'Consolas','Courier New',monospace;overflow-x:auto;color:var(--text);margin:12px 0;line-height:1.6;}
+code{background:#111;padding:2px 7px;border-radius:4px;color:var(--gold);font-size:13px;font-family:monospace;}
+
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+@media(max-width:540px){.cards{grid-template-columns:1fr;}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;}
+.card h4{color:var(--gold-l);font-size:14px;margin-bottom:8px;}
+.card p{color:var(--muted);font-size:13px;line-height:1.7;}
+
+.box{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:14px;}
+.box-gold{background:#1a1400;border:1px solid #3a2e00;color:var(--gold-l);}
+.box-green{background:#0a1a0a;border:1px solid #1a3a1a;color:#a0e0a0;}
+.box-red{background:#1a0a0a;border:1px solid #3a1a1a;color:#e0a0a0;}
+.box-blue{background:#0a0a1a;border:1px solid #1a1a3a;color:#a0a0e0;}
+.box-lbl{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:5px;opacity:.8;}
+
+table{width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;}
+th{background:#0a0a0a;color:var(--gold);padding:9px 13px;text-align:left;font-size:12px;letter-spacing:.05em;}
+td{padding:9px 13px;border-bottom:1px solid #1a1a1a;vertical-align:top;font-size:13px;}
+tr:last-child td{border-bottom:none;}
+td:first-child{color:var(--gold-l);font-family:monospace;white-space:nowrap;}
+
+.diagram{background:#080808;border:1px solid var(--border);border-radius:8px;padding:24px;font-family:monospace;font-size:13px;color:var(--muted);line-height:2.4;text-align:center;margin:18px 0;}
+.db{display:inline-block;background:var(--card);border:1px solid var(--border);padding:6px 18px;border-radius:6px;color:var(--text);}
+.db-g{border-color:var(--gold);color:var(--gold);}
+.arr{color:#444;display:block;}
+
+.tree{background:#080808;border:1px solid var(--border);border-radius:8px;padding:18px 22px;font-family:monospace;font-size:13px;line-height:2;}
+.td{color:var(--gold-l);} .tf{color:var(--text);} .tc{color:#444;}
+
+.checklist{list-style:none;padding:0;}
+.checklist li{padding:9px 0;border-bottom:1px solid #1a1a1a;display:flex;align-items:flex-start;gap:10px;font-size:14px;}
+.checklist li:last-child{border-bottom:none;}
+.ck{color:var(--green);flex-shrink:0;margin-top:1px;}
+.ck-lbl{color:var(--text);}
+.ck-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+.b-pub{background:#0a2a0a;color:var(--green);}
+.b-priv{background:#2a0a0a;color:#e05;}
+
+.sh{color:var(--gold-l);margin:28px 0 12px;font-size:16px;font-weight:600;}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;}
+@media(max-width:540px){.feature-grid{grid-template-columns:1fr;}}
+.feature-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.feature-item h5{color:var(--gold-l);font-size:13px;margin-bottom:6px;}
+.feature-item p{color:var(--muted);font-size:12px;line-height:1.6;}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-bottom:6px;font-weight:600;}
+.tag-new{background:#1a2a0a;color:#8ecc4e;}
+.tag-inv{background:#0a1a2a;color:#4e8ecc;}
+.tag-dash{background:#2a1a0a;color:#cc8e4e;}
+
+a{color:var(--gold);}
+a:hover{color:var(--gold-l);}
+strong{color:var(--gold-l);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Undangan Digital</div>
+  <a href="#ringkasan"   class="nav-link">Ringkasan</a>
+  <a href="#arsitektur"  class="nav-link">Arsitektur</a>
+  <a href="#apps-script" class="nav-link">Apps Script</a>
+  <a href="#konfigurasi" class="nav-link">Konfigurasi</a>
+  <a href="#localhost"   class="nav-link">Localhost</a>
+  <a href="#dashboard"   class="nav-link">Dashboard</a>
+  <a href="#fitur"       class="nav-link">Fitur Lengkap</a>
+  <a href="#deploy"      class="nav-link">Deploy</a>
+  <a href="#referensi"   class="nav-link">Referensi</a>
+</nav>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-badge">Panduan Lengkap v2</div>
+    <h1>Sistem Undangan Digital</h1>
+    <p>Panduan instalasi, konfigurasi, dan penggunaan lengkap. Termasuk semua fitur terbaru.</p>
+    <div class="chip-row">
+      <div class="chip">undangan.html</div>
+      <div class="chip">dashboard.html</div>
+      <div class="chip">apps-script.js</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       RINGKASAN FITUR
+  ============================================================ -->
+  <div class="section" id="ringkasan">
+    <div class="sec-num">Bagian 01</div>
+    <h2>Ringkasan Fitur</h2>
+    <p class="sec-intro">Sistem undangan digital ini terdiri dari tiga komponen utama dengan fitur-fitur berikut.</p>
+
+    <h3 class="sh">Halaman Undangan (undangan.html)</h3>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Animasi Fold-Unfold Cover</h5>
+        <p>Cover terbuka seperti amplop dengan 4 panel yang membuka ke luar saat tombol diklik. Dilengkapi efek dekorasi amplop dan animasi denyut pada ikon segel.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Dark / Light Mode</h5>
+        <p>Tombol toggle tema di pojok kanan atas. Preferensi tersimpan di browser sehingga tamu yang membuka ulang tidak perlu toggle lagi.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Tombol Simpan ke Kalender</h5>
+        <p>Buka Google Calendar langsung dengan judul, tanggal, waktu, dan lokasi acara sudah terisi otomatis. Tidak butuh API key apapun.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Proteksi Link</h5>
+        <p>Halaman hanya bisa dibuka dari link dengan NanoID valid (10 karakter). URL tanpa parameter atau format salah akan menampilkan halaman "Undangan Tidak Ditemukan".</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Cover Personal per Tamu</h5>
+        <p>Nama tamu otomatis ditampilkan di cover berdasarkan parameter URL <code>?to=NanoID</code>. Juga mengisi form RSVP secara otomatis.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Countdown Timer</h5>
+        <p>Hitung mundur real-time menuju hari acara. Berjalan langsung dengan data statis, lalu diperbarui dari Google Sheets jika sudah terhubung.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Galeri Foto + Lightbox</h5>
+        <p>Grid foto 3 kolom dengan efek hover. Klik foto untuk membuka lightbox tampilan penuh. Mendukung format WebP untuk performa optimal.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Info Acara + Google Maps</h5>
+        <p>Detail waktu dan tempat acara. Tombol buka Google Maps dan opsional embed peta langsung di halaman.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Rekening Digital</h5>
+        <p>Dua rekening bank dengan tombol salin nomor sekali klik. Data rekening bisa dikelola dari dashboard tanpa edit file HTML.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Form RSVP</h5>
+        <p>Konfirmasi kehadiran dengan status (hadir/tidak/ragu), jumlah tamu, dan pesan opsional. Statistik hadir/tidak/ragu tampil secara live.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Slideshow Ucapan Tamu</h5>
+        <p>Menampilkan konfirmasi kehadiran dan ucapan dari tamu dalam format slideshow otomatis. Auto-play 5 detik, navigasi manual, dan dot indicator.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-inv">Undangan</span>
+        <h5>Musik Latar Otomatis</h5>
+        <p>Musik mulai diputar saat tamu membuka undangan. Letakkan file mp3 di folder music/ dan isi path-nya di kode.</p>
+      </div>
+    </div>
+
+    <h3 class="sh">Dashboard Pengelola (dashboard.html)</h3>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Import CSV / Excel</h5>
+        <p>Upload file CSV atau Excel berisi daftar tamu. Deteksi kolom otomatis, tampilkan preview sebelum import, lalu kirim semua ke Google Sheets sekaligus.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Export Excel</h5>
+        <p>Download semua data tamu ke file .xlsx lengkap dengan status kirim WA, status RSVP, jumlah hadir, pesan, dan waktu konfirmasi.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-new">Baru</span>
+        <h5>Filter RSVP</h5>
+        <p>Filter tamu berdasarkan status RSVP mereka: Hadir, Tidak Hadir, Masih Ragu, atau Belum RSVP. Dikombinasikan dengan filter status kirim WA.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-dash">Dashboard</span>
+        <h5>Login Username + Password</h5>
+        <p>Halaman login dengan hash SHA-256. Salah 5 kali berturut-turut dikunci 60 detik. Kredensial bisa diubah kapan saja via tab Keamanan.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-dash">Dashboard</span>
+        <h5>Generate Link NanoID</h5>
+        <p>Setiap tamu baru mendapat NanoID 10 karakter unik (contoh: <code>K3dF9mPqRx</code>) sebagai pengganti UUID panjang. Dibuat menggunakan Web Crypto API bawaan browser.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-dash">Dashboard</span>
+        <h5>Generator Pesan WA</h5>
+        <p>Preview dan kirim pesan WhatsApp dengan link undangan personal per tamu. Kirim satu per satu atau massal dengan jeda otomatis.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-dash">Dashboard</span>
+        <h5>Monitor RSVP</h5>
+        <p>Tab khusus menampilkan semua konfirmasi kehadiran beserta statistik agregat. Data real-time dari Google Sheets.</p>
+      </div>
+      <div class="feature-item">
+        <span class="tag tag-dash">Dashboard</span>
+        <h5>Pengaturan Terpusat</h5>
+        <p>Semua detail acara (nama pasangan, tanggal, waktu, tempat, rekening, Maps URL) dikelola dari satu tab dan disimpan ke Google Sheets.</p>
+      </div>
+    </div>
+
+    <h3 class="sh">Format Link Undangan</h3>
+    <pre><span style="color:#555">// Format NanoID (10 karakter) - digunakan sekarang</span>
+https://username.github.io/undangan-nikah/undangan.html?to=K3dF9mPqRx
+
+<span style="color:#555">// Contoh lain</span>
+https://username.github.io/undangan-nikah/undangan.html?to=aB3xYm9_Qw</pre>
+    <div class="box box-blue">
+      <div class="box-lbl">Tentang NanoID</div>
+      NanoID diimplementasikan langsung dalam JavaScript tanpa library eksternal apapun. Menggunakan <code>crypto.getRandomValues()</code> - generator acak kriptografis bawaan browser. Dengan 64 karakter alfabet dan panjang 10 karakter, kemungkinan tebak acak adalah 1 banding 1,15 x 10^18 - mustahil secara praktis.
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ARSITEKTUR
+  ============================================================ -->
+  <div class="section" id="arsitektur">
+    <div class="sec-num">Bagian 02</div>
+    <h2>Arsitektur Sistem</h2>
+
+    <div class="diagram">
+      <div><span class="db">Tamu Undangan</span></div>
+      <span class="arr">| buka link ?to=NanoID</span>
+      <div><span class="db db-g">undangan.html</span></div>
+      <span class="arr">| fetch publik (tanpa secret key)</span>
+      <div><span class="db db-g">Google Apps Script (API)</span></div>
+      <span class="arr">| read / write</span>
+      <div><span class="db">Google Sheets (Database)</span></div>
+      <br>
+      <div style="color:#333">- - - - - - - - - - - - -</div><br>
+      <div><span class="db">Pengelola (kamu)</span></div>
+      <span class="arr">| login username + password</span>
+      <div><span class="db db-g">dashboard.html</span></div>
+      <span class="arr">| fetch + secret key</span>
+      <div><span class="db db-g">Google Apps Script (API)</span></div>
+    </div>
+
+    <h3 class="sh">Struktur File Proyek</h3>
+    <div class="tree">
+<span class="td">undangan-digital/</span>
+|-- <span class="tf">undangan.html</span>    <span class="tc">&lt;-- halaman undangan (publik)</span>
+|-- <span class="tf">dashboard.html</span>   <span class="tc">&lt;-- dashboard pengelola (private)</span>
+|-- <span class="tf">apps-script.js</span>   <span class="tc">&lt;-- kode backend Google Apps Script</span>
+|-- <span class="tf">panduan.html</span>     <span class="tc">&lt;-- file ini</span>
+|-- <span class="td">images/</span>          <span class="tc">&lt;-- foto-foto (format .webp disarankan)</span>
+|   |-- <span class="tf">foto-pria.webp</span>
+|   |-- <span class="tf">foto-wanita.webp</span>
+|   `-- <span class="tf">galeri-1.webp</span>  <span class="tc">dst...</span>
+`-- <span class="td">music/</span>           <span class="tc">&lt;-- opsional: musik latar</span>
+    `-- <span class="tf">lagu.mp3</span>
+    </div>
+
+    <h3 class="sh">Lapisan Keamanan</h3>
+    <table>
+      <thead><tr><th>Lapisan</th><th>Mekanisme</th><th>Melindungi</th></tr></thead>
+      <tr><td>1 - Validasi link</td><td>NanoID 10 karakter (format ketat)</td><td>Halaman undangan dari akses tanpa link valid</td></tr>
+      <tr><td>2 - Obscurity</td><td>64^10 kombinasi kemungkinan</td><td>Tebak link secara acak mustahil secara praktis</td></tr>
+      <tr><td>3 - Secret key</td><td>Header di setiap request API private</td><td>Data Sheets dari akses tanpa key</td></tr>
+      <tr><td>4 - Login dashboard</td><td>SHA-256 hash, lockout 5x salah</td><td>Dashboard dari akses tanpa kredensial</td></tr>
+    </table>
+  </div>
+
+  <!-- ============================================================
+       APPS SCRIPT
+  ============================================================ -->
+  <div class="section" id="apps-script">
+    <div class="sec-num">Bagian 03</div>
+    <h2>Setup Google Apps Script</h2>
+    <p class="sec-intro">Apps Script menjadi backend API gratis yang menghubungkan kedua halaman HTML ke Google Sheets. Ikuti langkah berikut dengan seksama - hanya perlu dilakukan sekali.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Buat Google Spreadsheet baru</h3>
+          <p>Buka <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> &rarr; klik <strong>+ Blank</strong> &rarr; beri nama bebas, contoh: <em>"Database Undangan"</em>.</p>
+          <div class="box box-green"><div class="box-lbl">Info</div>Sheet tambahan (Tamu, Pengaturan, RSVP, Ucapan) akan dibuat otomatis oleh Apps Script saat pertama kali dijalankan.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Buka Editor Apps Script</h3>
+          <p>Di Spreadsheet &rarr; klik menu <strong>Extensions</strong> &rarr; pilih <strong>Apps Script</strong>. Tab baru editor kode akan terbuka.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Tempel kode dari apps-script.js</h3>
+          <p>Di editor, tekan <strong>Ctrl+A</strong> lalu <strong>Delete</strong> untuk hapus semua kode yang ada. Buka file <code>apps-script.js</code> dengan Notepad, salin semua isinya, tempel ke editor.</p>
+          <div class="box box-gold">
+            <div class="box-lbl">WAJIB - Ganti Secret Key</div>
+            Cari baris ini dan ganti dengan kata sandi buatanmu:<br><br>
+            <code>const SECRET_KEY = "GANTI_DENGAN_SECRET_KEY_KAMU";</code><br><br>
+            Gunakan minimal 12 karakter kombinasi huruf besar/kecil, angka, dan simbol.<br>
+            Contoh: <code>Nik4h@nBudi2026!</code>
+          </div>
+          <p>Simpan dengan <strong>Ctrl+S</strong>.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Deploy sebagai Web App</h3>
+          <p>Klik tombol <strong>Deploy</strong> (kanan atas) &rarr; <strong>New deployment</strong>. Isi konfigurasi:</p>
+          <table>
+            <tr><td>Type</td><td>Web app</td></tr>
+            <tr><td>Execute as</td><td><strong>Me</strong> (akun Google kamu)</td></tr>
+            <tr><td>Who has access</td><td><strong>Anyone</strong> &larr; WAJIB</td></tr>
+          </table>
+          <p>Klik <strong>Deploy</strong> &rarr; izinkan akses saat diminta &rarr; <strong>salin URL yang muncul.</strong></p>
+          <div class="box box-green">
+            <div class="box-lbl">URL yang perlu disalin</div>
+            <code>https://script.google.com/macros/s/AKfycb.../exec</code>
+          </div>
+          <div class="box box-red">
+            <div class="box-lbl">Jika muncul error</div>
+            Pastikan "Who has access" sudah dipilih <strong>Anyone</strong>, bukan "Only myself".
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">5</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Verifikasi berhasil</h3>
+          <p>Buka URL deployment di browser. Jika berhasil akan muncul:</p>
+          <pre>{"ok":false,"msg":"Action tidak dikenal: undefined"}</pre>
+          <p>Itu normal - artinya Apps Script aktif dan siap menerima request.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       KONFIGURASI
+  ============================================================ -->
+  <div class="section" id="konfigurasi">
+    <div class="sec-num">Bagian 04</div>
+    <h2>Konfigurasi File HTML</h2>
+
+    <h3 class="sh">undangan.html - Cari dan Ganti</h3>
+    <p class="sec-intro">Buka file dengan VS Code atau Notepad. Cari semua komentar <code>GANTI</code> untuk menemukan bagian yang perlu diubah.</p>
+
+    <table>
+      <thead><tr><th>Cari Teks Ini</th><th>Ganti Dengan</th></tr></thead>
+      <tr><td>GANTI_DENGAN_URL_APPS_SCRIPT</td><td>URL dari hasil deploy Apps Script (Bagian 03 langkah 4)</td></tr>
+      <tr><td>Yudi &amp; Ayu (cover, hero, footer)</td><td>Nama pasangan kamu</td></tr>
+      <tr><td>Rabu, 25 Maret 2026</td><td>Hari dan tanggal lengkap acara</td></tr>
+      <tr><td>I Putu Agus Yudi Purnama</td><td>Nama lengkap pengantin pria</td></tr>
+      <tr><td>Ni Gusti Ayu Made Krismayuni</td><td>Nama lengkap pengantin wanita</td></tr>
+      <tr><td>I Nyoman Raka Winaya &amp; Ni Luh Made Sukeni</td><td>Nama orang tua pengantin pria</td></tr>
+      <tr><td>I Gusti Putu Wijana &amp; Ni Gusti Ayu Ketut Partini</td><td>Nama orang tua pengantin wanita</td></tr>
+      <tr><td>Br. Grokgak Sempidi, Kec. Mengwi, Kab. Badung</td><td>Alamat asal pengantin pria</td></tr>
+      <tr><td>Br. Menak Beringkit, Kec. Mengwi, Kab. Badung</td><td>Alamat asal pengantin wanita</td></tr>
+      <tr><td>15.00 (waktu acara)</td><td>Jam mulai acara</td></tr>
+      <tr><td>Gg. Dharmawangsa No. 4 Sempidi...</td><td>Alamat lengkap lokasi resepsi</td></tr>
+      <tr><td>maps.google.com/?q=... (href map-btn)</td><td>Link Google Maps lokasi acara</td></tr>
+      <tr><td>1234567890 (rek1-no)</td><td>Nomor rekening pertama</td></tr>
+      <tr><td>0987654321 (rek2-no)</td><td>Nomor rekening kedua</td></tr>
+      <tr><td>BCA / Mandiri</td><td>Nama bank masing-masing rekening</td></tr>
+      <tr><td>emoji placeholder galeri</td><td><code>&lt;img src="images/galeri-1.webp"&gt;</code></td></tr>
+      <tr><td>emoji placeholder foto pasangan</td><td><code>&lt;img src="images/foto-pria.webp"&gt;</code></td></tr>
+      <tr><td>src="" di tag audio</td><td>Path file musik: <code>music/lagu.mp3</code></td></tr>
+    </table>
+
+    <div class="box box-gold" style="margin-top:16px">
+      <div class="box-lbl">Tips Format Foto</div>
+      Gunakan format <strong>WebP</strong> untuk semua foto. Ukuran lebih kecil 30-80% dibanding PNG/JPG dengan kualitas sama.
+      Konversi gratis di <a href="https://squoosh.app" target="_blank">squoosh.app</a>.
+      Rekomendasi: quality 80-85%, lebar max 1200px untuk galeri, 800px untuk foto profil pasangan.
+    </div>
+
+    <div class="box box-gold" style="margin-top:12px">
+      <div class="box-lbl">Tips Embed Google Maps</div>
+      Google Maps &rarr; cari lokasi &rarr; Share &rarr; Embed a map &rarr; salin URL dari atribut <code>src="..."</code>.
+      Di undangan.html, cari komentar <code>uncomment + isi src embed Maps</code> lalu uncomment tag iframe dan isi src-nya.
+    </div>
+
+    <h3 class="sh">dashboard.html - Kredensial Default</h3>
+    <table>
+      <tr><td>Username</td><td><code>admin</code></td></tr>
+      <tr><td>Password</td><td><code>undangan2026</code></td></tr>
+    </table>
+    <div class="box box-red" style="margin-top:14px">
+      <div class="box-lbl">Wajib Diganti</div>
+      Setelah login pertama, langsung masuk ke tab <strong>Keamanan</strong> dan ganti username serta password dengan kombinasi yang kuat. Jangan biarkan menggunakan kredensial default.
+    </div>
+  </div>
+
+  <!-- ============================================================
+       LOCALHOST
+  ============================================================ -->
+  <div class="section" id="localhost">
+    <div class="sec-num">Bagian 05</div>
+    <h2>Uji Coba di Localhost</h2>
+    <p class="sec-intro">Jangan buka file HTML langsung dari folder (protokol file://) karena browser akan memblokir fetch API, audio, dan clipboard. Gunakan local server sederhana.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">A</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>VS Code Live Server (Paling Mudah)</h3>
+          <ul>
+            <li>Buka folder proyek di VS Code</li>
+            <li>Install extension <strong>Live Server</strong> oleh Ritwick Dey</li>
+            <li>Klik kanan <code>undangan.html</code> &rarr; <strong>Open with Live Server</strong></li>
+            <li>Browser otomatis buka: <code>http://127.0.0.1:5500/undangan.html</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">B</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Python HTTP Server</h3>
+          <p>Buka terminal di folder proyek, jalankan:</p>
+          <pre>python -m http.server 8080</pre>
+          <p>Buka browser: <code>http://localhost:8080/undangan.html</code></p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">C</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Node.js</h3>
+          <pre>npx http-server -p 8080</pre>
+          <p>Buka browser: <code>http://localhost:8080/undangan.html</code></p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="box box-gold">
+      <div class="box-lbl">Test Proteksi Link di Localhost</div>
+      Karena halaman sekarang membutuhkan NanoID valid di URL, buka dengan format:<br><br>
+      <code>http://localhost:8080/undangan.html?to=abcdefghij</code><br><br>
+      Pastikan tepat 10 karakter dari A-Z a-z 0-9 _ - . Tanpa parameter ini halaman akan menampilkan "Undangan Tidak Ditemukan".
+    </div>
+
+    <h3 class="sh">Urutan Pengujian yang Disarankan</h3>
+    <ul class="checklist">
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test proteksi link</span><span class="ck-sub">Buka undangan.html tanpa ?to= - harus muncul halaman blocked</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test buka dengan NanoID dummy</span><span class="ck-sub">undangan.html?to=abcdefghij - harus tampil cover dengan animasi fold-unfold</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test animasi fold-unfold</span><span class="ck-sub">Klik "Buka Undangan" - 4 panel harus membuka seperti amplop</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test dark/light mode</span><span class="ck-sub">Klik tombol bulat di pojok kanan atas - tema harus berubah</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test tampilan dashboard</span><span class="ck-sub">Buka dashboard.html - login dengan admin / undangan2026</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Hubungkan ke Google Sheets</span><span class="ck-sub">Isi URL Apps Script + secret key di dashboard - klik Hubungkan</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Isi pengaturan acara</span><span class="ck-sub">Tab Pengaturan - isi semua detail - klik Simpan ke Sheets</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Tambah tamu pertama</span><span class="ck-sub">Isi nama + nomor WA - klik Tambah - cek di Google Sheets</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test link tamu</span><span class="ck-sub">Salin link dari kolom Link di dashboard - buka di browser - nama tamu harus muncul di cover</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test RSVP + slideshow</span><span class="ck-sub">Isi form RSVP - submit - cek tab RSVP di dashboard dan slideshow di halaman undangan</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test tombol kalender</span><span class="ck-sub">Klik "Simpan ke Kalender" di section acara - harus buka Google Calendar dengan data terisi</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test import CSV</span><span class="ck-sub">Buat file CSV sederhana - upload di dashboard - cek preview - konfirmasi import</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Test export Excel</span><span class="ck-sub">Klik Export Excel di dashboard - file .xlsx harus terdownload</span></span></li>
+      <li><span class="ck">[v]</span><span><span class="ck-lbl">Ganti kredensial dashboard</span><span class="ck-sub">Tab Keamanan - isi username + password baru - simpan</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============================================================
+       DASHBOARD
+  ============================================================ -->
+  <div class="section" id="dashboard">
+    <div class="sec-num">Bagian 06</div>
+    <h2>Cara Menggunakan Dashboard</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Login</h3>
+          <p>Buka <code>dashboard.html</code> &rarr; masukkan username <code>admin</code> dan password <code>undangan2026</code>. Salah 5 kali berturut-turut &rarr; dikunci 60 detik.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Hubungkan ke Google Sheets</h3>
+          <p>Isi URL Apps Script dan secret key di kotak setup bagian atas &rarr; klik <strong>Hubungkan</strong>. Status berubah menjadi "Terhubung" jika berhasil. Koneksi tersimpan di browser, hanya perlu dilakukan sekali.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Isi Pengaturan Acara</h3>
+          <p>Tab <strong>Pengaturan</strong> &rarr; isi semua detail: nama pasangan, tanggal, waktu, tempat, base URL undangan, URL Maps, dan data dua rekening &rarr; klik <strong>Simpan ke Sheets</strong>. Data ini tampil otomatis di halaman undangan.</p>
+          <div class="box box-gold">
+            <div class="box-lbl">Base URL Undangan</div>
+            Isi dengan URL halaman undangan tanpa parameter, contoh:<br>
+            <code>https://username.github.io/undangan-nikah/undangan.html</code><br>
+            Sistem otomatis menambahkan <code>?to=NanoID</code> untuk setiap tamu.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Tambah Tamu (Manual atau Import)</h3>
+          <p><strong>Manual:</strong> isi nama dan nomor WA &rarr; klik Tambah. Setiap tamu mendapat NanoID 10 karakter unik otomatis.</p>
+          <p><strong>Import massal:</strong> klik "Import CSV / Excel" &rarr; upload file &rarr; cek preview &rarr; klik "Import Sekarang". Format nomor WA: <code>6281234567890</code> (tanpa + dan spasi).</p>
+          <p>Untuk membuat file import, klik <strong>"Unduh Template CSV"</strong> terlebih dahulu &rarr; isi data &rarr; upload kembali.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">5</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Kirim Undangan via WhatsApp</h3>
+          <p><strong>Satu tamu:</strong> klik ikon preview (mata) untuk cek pesan &rarr; klik tombol WA untuk buka WhatsApp Web dengan pesan terisi otomatis.</p>
+          <p><strong>Massal:</strong> centang beberapa tamu &rarr; klik "Kirim WA Dipilih" &rarr; setiap tamu dibuka di tab baru dengan jeda 0,7 detik.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">6</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Filter dan Monitor Tamu</h3>
+          <p>Gunakan kolom pencarian untuk cari nama tamu. Gunakan dropdown <strong>Status Kirim</strong> untuk filter yang sudah/belum dikirim WA. Gunakan dropdown <strong>Filter RSVP</strong> untuk filter berdasarkan konfirmasi kehadiran tamu.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">7</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Export Data ke Excel</h3>
+          <p>Klik tombol "Export Excel" di atas tabel tamu. File <code>daftar-tamu-undangan.xlsx</code> akan terdownload berisi semua data tamu lengkap dengan status RSVP masing-masing.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">8</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Ganti Kredensial Login</h3>
+          <p>Tab <strong>Keamanan</strong> &rarr; isi username baru, password baru (min. 8 karakter), konfirmasi password &rarr; klik Simpan. Berlaku segera.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FITUR LENGKAP
+  ============================================================ -->
+  <div class="section" id="fitur">
+    <div class="sec-num">Bagian 07</div>
+    <h2>Detail Fitur Baru</h2>
+
+    <h3 class="sh">Animasi Fold-Unfold</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Cover terdiri dari 4 panel (atas, bawah, kiri, kanan) yang membuka ke luar secara bersamaan saat tombol "Buka Undangan" diklik, menciptakan efek amplop yang dibuka. Menggunakan CSS 3D transform dengan <code>perspective</code> dan <code>rotateX/rotateY</code>. Tidak butuh library JavaScript apapun.</p>
+
+    <h3 class="sh">Dark / Light Mode</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Diimplementasikan dengan CSS custom properties (<code>var()</code>) dan atribut <code>data-theme</code> di tag html. Toggle antara tema gelap (default) dan terang. Preferensi disimpan di <code>localStorage</code> browser.</p>
+
+    <h3 class="sh">NanoID - Generator ID Pendek</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Implementasi mandiri tanpa library eksternal. Menggunakan <code>crypto.getRandomValues()</code> (Web Crypto API bawaan browser) untuk menghasilkan angka acak yang kriptografis. Alfabet 64 karakter (A-Z a-z 0-9 _ -) dengan panjang 10 karakter menghasilkan sekitar 1,15 x 10^18 kemungkinan kombinasi unik.</p>
+    <pre><span style="color:#555">// Implementasi yang digunakan (pure JavaScript, no library)</span>
+function nanoid(){
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+  const arr=new Uint8Array(10);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b=>chars[b%64]).join('');
+}</pre>
+
+    <h3 class="sh">Import CSV / Excel</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Menggunakan library <strong>SheetJS</strong> yang dimuat dari CDN hanya saat dibutuhkan (lazy loading). Mendukung file .csv, .xlsx, dan .xls. Deteksi kolom nama dan nomor WA otomatis berdasarkan nama header (tidak case-sensitive). Tampilkan preview 5 baris sebelum import untuk verifikasi.</p>
+
+    <h3 class="sh">Tombol Google Calendar</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:12px">Membuka URL Google Calendar dengan parameter yang sudah terisi otomatis dari data pengaturan. Format tanggal di-parse dari format Indonesia ("Rabu, 25 Maret 2026"). Tidak memerlukan Google Calendar API atau OAuth - murni URL parameter standar yang didukung Google Calendar.</p>
+  </div>
+
+  <!-- ============================================================
+       DEPLOY
+  ============================================================ -->
+  <div class="section" id="deploy">
+    <div class="sec-num">Bagian 08</div>
+    <h2>Deploy ke GitHub Pages</h2>
+    <p class="sec-intro">Hosting gratis dengan domain github.io. Tidak perlu bayar apapun.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">1</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Buat Repository GitHub</h3>
+          <p>Login di <a href="https://github.com" target="_blank">github.com</a> &rarr; klik <strong>New repository</strong> &rarr; beri nama (contoh: <code>undangan-nikah</code>) &rarr; pilih <strong>Public</strong> &rarr; klik Create.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">2</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Upload File</h3>
+          <p>Di repository &rarr; klik <strong>Add file &rarr; Upload files</strong> &rarr; drag &amp; drop file berikut:</p>
+          <ul>
+            <li><code>undangan.html</code></li>
+            <li><code>dashboard.html</code></li>
+            <li>Folder <code>images/</code> dengan semua foto .webp</li>
+            <li>Folder <code>music/</code> jika ada</li>
+          </ul>
+          <p>&rarr; Klik <strong>Commit changes</strong>.</p>
+          <div class="box box-red">
+            <div class="box-lbl">Jangan Upload</div>
+            <code>apps-script.js</code> dan <code>panduan.html</code> tidak perlu diupload ke GitHub Pages.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">3</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Aktifkan GitHub Pages</h3>
+          <p>Di repository &rarr; tab <strong>Settings</strong> &rarr; sidebar <strong>Pages</strong> &rarr; Source: <strong>Deploy from a branch</strong> &rarr; Branch: <strong>main</strong> &rarr; klik Save.</p>
+          <p>Tunggu 1-3 menit. Website live di:</p>
+          <pre>https://username.github.io/undangan-nikah/undangan.html</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-line"><div class="step-num">4</div><div class="step-connector"></div></div>
+        <div class="step-body">
+          <h3>Update Base URL di Dashboard</h3>
+          <p>Buka dashboard &rarr; tab Pengaturan &rarr; isi field <strong>Base URL Undangan</strong>:</p>
+          <pre>https://username.github.io/undangan-nikah/undangan.html</pre>
+          <p>Klik Simpan ke Sheets. Link tamu sekarang akan berbentuk:</p>
+          <pre>https://username.github.io/undangan-nikah/undangan.html?to=K3dF9mPqRx</pre>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 class="sh">Ringkasan Biaya</h3>
+    <table>
+      <thead><tr><th>Komponen</th><th>Biaya</th></tr></thead>
+      <tr><td>GitHub Pages hosting</td><td>Gratis</td></tr>
+      <tr><td>Domain github.io</td><td>Gratis</td></tr>
+      <tr><td>Google Sheets database</td><td>Gratis</td></tr>
+      <tr><td>Google Apps Script API</td><td>Gratis</td></tr>
+      <tr><td>SheetJS (import/export)</td><td>Gratis (CDN)</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>Rp 0</strong></td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--muted);margin-top:10px">Opsional: beli domain sendiri (.my.id ~Rp 15.000/tahun) untuk URL lebih pendek dan personal.</p>
+  </div>
+
+  <!-- ============================================================
+       REFERENSI
+  ============================================================ -->
+  <div class="section" id="referensi">
+    <div class="sec-num">Bagian 09</div>
+    <h2>Referensi Cepat</h2>
+
+    <h3 class="sh">Endpoint API Apps Script</h3>
+    <table>
+      <thead><tr><th>Action</th><th>Akses</th><th>Keterangan</th></tr></thead>
+      <tr><td>getGuestByToken</td><td><span class="badge b-pub">Publik</span></td><td>Ambil nama tamu dari NanoID</td></tr>
+      <tr><td>submitRsvp</td><td><span class="badge b-pub">Publik</span></td><td>Kirim konfirmasi kehadiran</td></tr>
+      <tr><td>getRsvpStats</td><td><span class="badge b-pub">Publik</span></td><td>Statistik hadir/tidak/ragu</td></tr>
+      <tr><td>getRsvpAll</td><td><span class="badge b-pub">Publik</span></td><td>Semua data RSVP untuk slideshow</td></tr>
+      <tr><td>getGuests</td><td><span class="badge b-priv">Private</span></td><td>Daftar semua tamu</td></tr>
+      <tr><td>addGuest</td><td><span class="badge b-priv">Private</span></td><td>Tambah tamu baru</td></tr>
+      <tr><td>deleteGuest</td><td><span class="badge b-priv">Private</span></td><td>Hapus tamu</td></tr>
+      <tr><td>updateStatus</td><td><span class="badge b-priv">Private</span></td><td>Update status kirim WA</td></tr>
+      <tr><td>getSettings / saveSettings</td><td><span class="badge b-priv">Private</span></td><td>Baca / simpan pengaturan acara</td></tr>
+    </table>
+
+    <h3 class="sh">Struktur Google Sheets</h3>
+    <table>
+      <thead><tr><th>Sheet</th><th>Kolom</th></tr></thead>
+      <tr><td>Tamu</td><td>ID (NanoID) | Nama | No WA | Status Kirim | Waktu Tambah</td></tr>
+      <tr><td>Pengaturan</td><td>Key | Value</td></tr>
+      <tr><td>RSVP</td><td>ID Tamu | Nama | Status | Jumlah Hadir | Catatan | Waktu</td></tr>
+      <tr><td>Ucapan</td><td>ID | Nama Pengirim | Ucapan | Waktu</td></tr>
+    </table>
+
+    <h3 class="sh">Troubleshooting</h3>
+    <div class="card" style="margin-bottom:12px">
+      <h4>Muncul "Undangan Tidak Ditemukan" padahal link sudah benar</h4>
+      <p>Validasi sekarang membutuhkan tepat 10 karakter dari alfabet A-Z a-z 0-9 _ - . Pastikan link disalin dari kolom Link di dashboard, bukan diketik manual. Jika tamu lama memiliki UUID panjang, tambahkan ulang sebagai tamu baru untuk mendapat NanoID.</p>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <h4>Animasi fold-unfold tidak muncul / langsung skip</h4>
+      <p>Pastikan halaman dibuka via local server (bukan file://). Cek juga apakah ada error di browser console (F12). Animasi menggunakan CSS 3D transform yang membutuhkan hardware acceleration aktif di browser.</p>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <h4>Import CSV gagal - kolom tidak terdeteksi</h4>
+      <p>Pastikan baris pertama file adalah header dan mengandung kata "Nama" di salah satu kolomnya. Kata "WA", "HP", "No", atau "Telepon" untuk kolom nomor. Header tidak case-sensitive. Download template CSV dari dashboard sebagai referensi format yang benar.</p>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <h4>Tombol kalender tidak berfungsi / membuka halaman salah</h4>
+      <p>Pastikan data tanggal di pengaturan sudah tersimpan ke Sheets dengan format yang benar: "Hari, DD Bulan YYYY", contoh: "Rabu, 25 Maret 2026". Nama bulan harus dalam Bahasa Indonesia. Coba simpan ulang pengaturan dari dashboard.</p>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <h4>Export Excel kosong atau tidak ada data RSVP</h4>
+      <p>Data RSVP di export diambil dari cache yang dimuat saat membuka tab RSVP di dashboard. Buka tab RSVP terlebih dahulu sebelum klik Export Excel agar data RSVP ikut ter-export.</p>
+    </div>
+    <div class="card">
+      <h4>Setelah update kode Apps Script tidak ada perubahan</h4>
+      <p>Setiap perubahan kode harus di-deploy ulang dengan deployment baru: klik Deploy &rarr; New deployment (bukan edit yang lama). URL berubah dan perlu diupdate di dashboard serta di field SCRIPT_URL pada undangan.html.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var sections=document.querySelectorAll('.section');
+var navLinks=document.querySelectorAll('.nav-link');
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      navLinks.forEach(function(l){l.classList.remove('active');});
+      var match=document.querySelector('.nav-link[href="#'+e.target.id+'"]');
+      if(match) match.classList.add('active');
+    }
+  });
+},{rootMargin:'-30% 0px -60% 0px'});
+sections.forEach(function(s){observer.observe(s);});
+</script>
+</body>
+</html>
