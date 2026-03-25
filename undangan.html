@@ -6,6 +6,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wedding Invitation — S & W</title>
+  <meta property="og:title" content="Undangan Pernikahan — Sena & Widya">
+  <meta property="og:description" content="Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/images/hero-bg.webp">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -120,50 +124,49 @@
       background: rgba(200, 169, 110, .28);
     }
 
-    /* MUSIC BTN */
+    /* MUSIC BTN (Piringan Hitam) */
     .music-btn {
-      position: fixed;
-      top: 70px;
-      right: 18px;
-      z-index: 500;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(200, 169, 110, .12);
+      position: fixed; top: 70px; right: 18px; z-index: 500;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(20px, 20px, 20px, 1);
       border: 1px solid rgba(200, 169, 110, .25);
-      color: var(--accent);
-      font-size: 18px;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      transition: background .3s;
-      backdrop-filter: blur(6px);
+      color: transparent; font-size: 0; cursor: pointer; display: none;
+      align-items: center; justify-content: center;
+      transition: background .3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
-
-    .music-btn.active {
-      display: flex;
+    .music-btn.active { display: flex; }
+    .music-btn::before {
+      content: ''; position: absolute; inset: 3px; border-radius: 50%;
+      background: conic-gradient(#333 0deg, #111 45deg, #333 90deg, #111 135deg, #333 180deg, #111 225deg, #333 270deg, #111 315deg, #333 360deg);
+      border: 1px solid #000; z-index: 1; transition: transform 0.3s;
     }
-
-    .music-btn:hover {
-      background: rgba(200, 169, 110, .28);
+    .music-btn::after {
+      content: ''; position: absolute; width: 8px; height: 8px;
+      border-radius: 50%; background: var(--accent); z-index: 2;
     }
-
-    /* Animasi denyut saat musik bermain */
-    .music-btn.playing {
-      animation: musicPulse 2.5s ease-in-out infinite;
+    .music-btn.playing::before {
+      animation: spinVinyl 3.5s linear infinite;
     }
+    @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
 
-    @keyframes musicPulse {
+    /* LIGHTBOX NAV */
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.5); border: none; color: white;
+      font-size: 24px; padding: 15px 10px; cursor: pointer;
+      z-index: 1000; border-radius: 8px;
+    }
+    .lightbox-prev { left: 10px; }
+    .lightbox-next { right: 10px; }
+    #lightbox-img { transition: opacity 0.3s; }
 
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(200, 169, 110, .25);
-      }
-
-      50% {
-        box-shadow: 0 0 0 7px rgba(200, 169, 110, 0);
-      }
+    /* FORM SHAKE */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); border: 1px solid #ff4d4f; }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
     }
 
     /* FOLD-UNFOLD COVER */
@@ -1219,7 +1222,7 @@
       position: relative;
     }
 
-    .chat-bubble.me {
+    .chat-bubble:nth-child(even) {
       align-self: flex-end;
       border-radius: 18px 18px 4px 18px;
       background: rgba(200, 169, 110, 0.05);
@@ -1229,6 +1232,7 @@
     .chat-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       margin-bottom: 6px;
     }
@@ -1530,6 +1534,33 @@
       color: var(--accent);
       background: rgba(200, 169, 110, 0.05);
     }
+
+    /* THANK YOU MODAL */
+    .ty-modal {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+    }
+    .ty-modal.show { opacity: 1; pointer-events: auto; }
+    .ty-content {
+      background: var(--card); border: 1px solid var(--accent);
+      padding: 40px 30px; border-radius: 16px; text-align: center;
+      max-width: 90%; width: 400px;
+      transform: scale(0.9) translateY(20px); opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .ty-modal.show .ty-content { transform: scale(1) translateY(0); opacity: 1; transition-delay: 0.1s; }
+    .ty-icon { font-size: 50px; color: var(--accent); margin-bottom: 20px; line-height: 1; }
+    .ty-title { font-family: var(--serif); font-size: 32px; color: var(--accent); margin-bottom: 15px; font-style: italic; }
+    .ty-text { font-size: 15px; color: var(--fg); line-height: 1.6; opacity: 0.9; margin-bottom: 25px; }
+    .ty-btn {
+      background: transparent; color: var(--accent); border: 1px solid var(--accent);
+      padding: 10px 30px; font-family: var(--sans); font-size: 13px; font-weight: 500;
+      border-radius: 30px; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .ty-btn:hover { background: var(--accent); color: var(--bg); }
 
     /* LOADER */
     #loader {
@@ -2140,9 +2171,21 @@
     </footer>
   </div>
 
-  <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+  <!-- THANK YOU MODAL -->
+  <div class="ty-modal" id="ty-modal">
+    <div class="ty-content">
+      <div class="ty-icon" id="ty-icon">🤍</div>
+      <div class="title" style="font-family:var(--serif);font-size:32px;color:var(--accent);margin-bottom:15px;font-style:italic;">Terima Kasih</div>
+      <div class="ty-text" id="ty-desc">Kehadiran Anda sangat berarti bagi kami,<br><b id="ty-name" style="color:var(--accent);font-size:17px;display:block;margin-top:5px;">Nama Tamu</b></div>
+      <button class="ty-btn" onclick="document.getElementById('ty-modal').classList.remove('show')">Tutup</button>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="if(event.target.id==='lightbox') this.classList.remove('open')">
     <button class="lightbox-close"
       onclick="document.getElementById('lightbox').classList.remove('open')">&#10005;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navGallery(-1)">&#10094;</button>
+    <button class="lightbox-nav lightbox-next" onclick="navGallery(1)">&#10095;</button>
     <img id="lightbox-img" src="" alt="">
   </div>
   <div class="toast" id="toast"></div>
@@ -2152,7 +2195,7 @@
   </audio>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6Z43z47nN_8EuYoPfrMniHcQK6CbidL94_Updv8P4OLf4Jqb1UL3Bn68xOKabqXMCqA/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzx6UPdAjUuOGeN2V9BYhqDVE98Du2RocPOr_OFg9hpIV_B_aRPZPN1fGmSC7lubioqdA/exec";
     const STATIC = {
       couple: "Sena & Widya", date: "Rabu, 27 Mei 2026",
       time: "14.00", place: "Br. Grokgak Gg. Bima No. 5 Sempidi, Mengwi, Badung"
@@ -2290,7 +2333,14 @@
       const a = document.getElementById('bg-music');
       const musicSrc = a.querySelector('source')?.src || a.src;
       if (musicSrc && !musicSrc.endsWith('/') && !musicSrc.endsWith('.html')) {
-        a.play().catch(() => { });
+        a.volume = 0;
+        a.play().then(() => {
+          let vol = 0;
+          const fade = setInterval(() => {
+            if (vol < 1) { vol += 0.05; a.volume = Math.min(1, vol); }
+            else { clearInterval(fade); }
+          }, 100);
+        }).catch(() => { });
         const btn = document.getElementById('music-btn');
         btn.classList.add('active', 'playing');
       }
@@ -2301,16 +2351,11 @@
       const btn = document.getElementById('music-btn');
       if (a.paused) {
         a.play().catch(() => { });
-        btn.textContent = '\u266B';
         btn.classList.add('playing');
       } else {
         a.pause();
-        btn.textContent = '\u266A';
         btn.classList.remove('playing');
-        btn.style.opacity = '.5';
-        return;
       }
-      btn.style.opacity = '1';
     }
 
     async function api(action, body = {}) {
@@ -2326,18 +2371,9 @@
       } catch (e) { }
     }
     function applySettings() {
-      const s = settings, cp = (s.couple || '').split('&').map(x => x.trim());
-      const p1 = cp[0] || '', p2 = cp[1] || '';
-      if (p1) { ['cover-p1', 'h-p1'].forEach(id => document.getElementById(id).textContent = id.startsWith('h-') ? p1.split(' ')[0] : p1); }
-      if (p2) { ['cover-p2', 'h-p2'].forEach(id => document.getElementById(id).textContent = id.startsWith('h-') ? p2.split(' ')[0] : p2); }
-      if (s.date) { document.getElementById('cover-date').textContent = s.date; parseHeroDate(s.date); }
-      const rekMap = { 'rek1-bank': 'rek1Bank', 'rek1-no': 'rek1No', 'rek1-nama': 'rek1Nama', 'rek2-bank': 'rek2Bank', 'rek2-no': 'rek2No', 'rek2-nama': 'rek2Nama' };
-      Object.entries(rekMap).forEach(([id, key]) => {
-        if (s[key]) document.getElementById(id).textContent = s[key];
-      });
-      if (s.place) document.getElementById('ev-place').innerHTML = s.place.replace(/,\s*/g, ',<br>');
-      if (s.mapsUrl) document.getElementById('maps-link').href = s.mapsUrl;
-      startCountdown(s.date, s.time);
+      // Data Nama, Tanggal, Rekening, dan Tempat kini MURNI hardcoded di HTML demi keamanan.
+      // Pengaturan di dashboard tetap disimpan untuk keperluan template pesan WhatsApp saja.
+      startCountdown(STATIC.date, STATIC.time);
     }
     function parseHeroDate(d) {
       if (!d) return;
@@ -2357,7 +2393,7 @@
       const yr = (lower.match(/\d{4}/) || [])[0];
       if (mi < 0 || !yr) return;
       let tc = (timeStr || '15.00').replace('.', '').replace(':', '').substring(0, 4).padEnd(4, '0');
-      const target = new Date(yr + '-' + String(mi + 1).padStart(2, '0') + '-' + day + 'T' + tc.substring(0, 2) + ':' + tc.substring(2, 4) + ':00');
+      const target = new Date(yr + '-' + String(mi + 1).padStart(2, '0') + '-' + day + 'T' + tc.substring(0, 2) + ':' + tc.substring(2, 4) + ':00+08:00');
       function tick() {
         const diff = target - Date.now(), pad = n => String(Math.max(0, n)).padStart(2, '0');
         if (diff <= 0) { ['cd-d', 'cd-h', 'cd-m', 'cd-s'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2415,23 +2451,42 @@
       try { const r = await api('getRsvpStats'); if (r.ok) { document.getElementById('stat-hadir').textContent = r.hadir || 0; document.getElementById('stat-tidak').textContent = r.tidak || 0; document.getElementById('stat-ragu').textContent = r.ragu || 0; } } catch (e) { }
     }
     async function submitRsvp() {
-      const nama = document.getElementById('rsvp-nama').value.trim();
-      const status = document.getElementById('rsvp-status').value;
+      const namaEl = document.getElementById('rsvp-nama');
+      let nama = namaEl.value.trim();
+      const statusEl = document.getElementById('rsvp-status');
+      const status = statusEl.value;
       const jumlah = parseInt(document.getElementById('rsvp-jumlah').value) || 1;
       const catatan = document.getElementById('rsvp-pesan').value.trim();
-      if (!nama) { showToast('Nama wajib diisi'); return; }
+      
+      if (!nama) { 
+        namaEl.style.animation = 'shake 0.4s';
+        setTimeout(() => namaEl.style.animation = '', 400);
+        showToast('Nama wajib diisi'); return; 
+      }
+      // Auto capitalize
+      nama = nama.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      namaEl.value = nama;
+
       const btn = document.getElementById('rsvp-btn');
       btn.disabled = true; btn.textContent = 'Mengirim...';
       try {
         const r = await api('submitRsvp', { idTamu: guestToken || ('guest-' + Date.now()), nama, status, jumlah, catatan });
         if (r.ok) {
-          // Jika ada pesan/ucapan, simpan juga ke sheet Ucapan agar tampil di chat
-          if (catatan) {
-            try { await api('submitUcapan', { nama, ucapan: catatan }); } catch(e) { /* abaikan */ }
+          showToast('Kehadiran Terkonfirmasi!');
+          
+          // Tampilkan Modal Spesial Berdasarkan Status
+          let icon = '🤍', desc = 'Kehadiran Anda sangat berarti bagi kami,';
+          if (status === 'tidak') {
+            icon = '🕊️'; desc = 'Terima kasih atas doa restunya, walaupun Anda belum bisa hadir,';
+          } else if (status === 'ragu') {
+            icon = '✨'; desc = 'Terima kasih atas konfirmasinya. Kami harap Anda dapat hadir,';
           }
-          showToast('Konfirmasi kehadiran terkirim!');
-          document.getElementById('rsvp-note').textContent = 'Terima kasih telah mengkonfirmasi kehadiran Anda';
-          btn.textContent = 'Terkirim';
+          document.getElementById('ty-icon').textContent = icon;
+          document.getElementById('ty-desc').innerHTML = `${desc}<br><b id="ty-name" style="color:var(--accent);font-size:17px;display:block;margin-top:5px;">${esc(nama)}</b>`;
+          document.getElementById('ty-modal').classList.add('show');
+          
+          document.getElementById('rsvp-note').innerHTML = '';
+          btn.textContent = 'Terkirim \u2713';
           await Promise.all([loadRsvpStats(), loadRsvpSlideshow()]);
         } else {
           showToast('Gagal: ' + r.msg);
@@ -2445,21 +2500,17 @@
       }
     }
 
-    // --- AMBIL DATA UCAPAN DARI SPREADSHEET ---
+    // --- AMBIL DATA RSVP PUBLIK UNTUK CHAT ---
     async function loadRsvpSlideshow() {
       try {
-        // Gunakan getUcapan (public endpoint, tidak perlu secretKey)
-        const r = await api('getUcapan');
-        if (r.ok && r.ucapan) {
-          buildChat(r.ucapan);
-        }
-      } catch (e) { /* Ucapan gagal dimuat, abaikan */ }
+        const r = await api('getRsvpPublic');
+        if (r.ok && r.rsvp) buildChat(r.rsvp);
+      } catch (e) { /* abaikan */ }
     }
 
     function buildChat(items) {
       const container = document.getElementById('chat-list');
-      // Filter hanya ucapan yang tidak kosong
-      const valid = (items || []).filter(i => (i.ucapan || i.catatan || '').trim());
+      const valid = items || [];
       if (!valid.length) {
         container.innerHTML = '<div style="text-align:center;padding:100px 40px;opacity:0.5;font-style:italic;">Belum ada ucapan dari tamu</div>';
         container.style.animation = 'none';
@@ -2473,15 +2524,23 @@
       });
 
       let html = '';
-      const renderItem = (item, idx) => `
-        <div class="chat-bubble ${idx % 2 === 1 ? 'me' : ''}">
+      const renderItem = (item, idx) => {
+        const st = (item.status||'').toLowerCase();
+        let badge = '';
+        if (st==='hadir') badge = '<span class="chat-status hadir"><i class="ri-check-line"></i> Hadir</span>';
+        else if (st==='tidak') badge = '<span class="chat-status tidak"><i class="ri-close-line"></i> Tidak Hadir</span>';
+        else if (st==='ragu') badge = '<span class="chat-status ragu"><i class="ri-question-mark"></i> Ragu</span>';
+        
+        return `
+        <div class="chat-bubble">
           <div class="chat-header">
             <span class="chat-name">${esc(item.nama || 'Tamu')}</span>
+            ${badge}
           </div>
-          <div class="chat-msg">"${esc(item.ucapan || item.catatan || '')}"</div>
+          <div class="chat-msg">"${esc(item.catatan || '')}"</div>
           <span class="chat-date">${fmtDate(item.waktu)}</span>
         </div>
-      `;
+      `};
 
       list.forEach((item, i) => html += renderItem(item, i));
 
@@ -2499,17 +2558,40 @@
       container.style.animationDuration = `${duration}s`;
     }
 
+    let galItems = [];
+    let galIdx = 0;
     function setupGallery() {
-      document.querySelectorAll('.gallery-item').forEach(item => {
+      galItems = Array.from(document.querySelectorAll('.gallery-item img')).map(img => img.src);
+      document.querySelectorAll('.gallery-item').forEach((item, i) => {
         item.addEventListener('click', () => {
-          const img = item.querySelector('img'); if (!img) return;
-          document.getElementById('lightbox-img').src = img.src;
+          galIdx = i;
+          document.getElementById('lightbox-img').src = galItems[galIdx];
           document.getElementById('lightbox').classList.add('open');
         });
       });
+      // Swipe logic lightox
+      let sx = 0;
+      const lb = document.getElementById('lightbox');
+      lb.addEventListener('touchstart', e => sx = e.changedTouches[0].screenX, {passive:true});
+      lb.addEventListener('touchend', e => {
+        const ex = e.changedTouches[0].screenX;
+        if (ex < sx - 40) navGallery(1);
+        else if (ex > sx + 40) navGallery(-1);
+      }, {passive:true});
+    }
+    
+    function navGallery(step) {
+      if(!galItems.length) return;
+      galIdx = (galIdx + step + galItems.length) % galItems.length;
+      const imgEl = document.getElementById('lightbox-img');
+      imgEl.style.opacity = 0;
+      setTimeout(() => {
+        imgEl.src = galItems[galIdx];
+        imgEl.style.opacity = 1;
+      }, 200);
     }
     function setupScrollAnim() {
-      const sels = ['.section-label', '.section-title', '.couple-photo', '.couple-role', '.couple-name', '.couple-parents', '.countdown-cell', '.event-block > *', '.action-btns > *', '.maps-embed', '.gallery-item', '.rek-card', '.rsvp-stat', '.rsvp-form > *', '.slideshow-wrap', 'footer > *'];
+      const sels = ['.section-label', '.section-title', '.couple-photo', '.couple-role', '.couple-name', '.couple-parents', '.countdown-cell', '.event-block > *', '.action-btns > *', '.maps-embed', '.gallery-item', '.rek-card', '.rsvp-stat', '.rsvp-form > *', '.chat-container', '.intro-section > *', '.divider', 'section > p', '.couple-sep', 'footer > *'];
       document.querySelectorAll(sels.join(', ')).forEach(el => {
         el.classList.add('reveal');
         if (el.classList.contains('gallery-item')) el.classList.add('zoom');
