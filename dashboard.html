@@ -297,7 +297,6 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
   <div class="tabs">
     <div class="tab active" onclick="switchTab('tamu',this)"><i class="ri-group-line"></i> Tamu</div>
     <div class="tab" onclick="switchTab('rsvp',this)"><i class="ri-mail-check-line"></i> RSVP</div>
-    <div class="tab" onclick="switchTab('ucapan',this)"><i class="ri-message-3-line"></i> Ucapan</div>
     <div class="tab" onclick="switchTab('pengaturan',this)"><i class="ri-settings-3-line"></i> Pengaturan</div>
     <div class="tab" onclick="switchTab('akun',this)"><i class="ri-lock-password-line"></i> Keamanan</div>
   </div>
@@ -381,22 +380,6 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
     </div>
   </div>
 
-  <!-- === UCAPAN === -->
-  <div class="panel" id="tab-ucapan">
-    <div class="card">
-      <div class="card-title"><i class="ri-chat-quote-line"></i> Ucapan & Doa Masuk</div>
-      
-      <div class="search-row">
-        <input type="text" id="ucapan-search" placeholder="Cari nama atau isi pesan..." oninput="renderUcapan()">
-        <button class="btn btn-outline btn-sm" onclick="loadUcapan()"><i class="ri-refresh-line"></i> Refresh</button>
-      </div>
-
-      <div class="rsvp-list" id="ucapan-list">
-        <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Memuat data...</div>
-      </div>
-    </div>
-  </div>
-
   <!-- === PENGATURAN === -->
   <div class="panel" id="tab-pengaturan">
     <div class="card">
@@ -408,17 +391,6 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
         <div class="fg"><label>Tempat</label><input type="text" id="set-place" placeholder="Jl. ..."></div>
         <div class="fg form-full"><label>Base URL Undangan (Tanpa ?to=...)</label><input type="text" id="set-baseurl" placeholder="https://undangan-saya.my.id"></div>
         <div class="fg form-full"><label>URL Google Maps (Link Embed/Share)</label><input type="text" id="set-mapsurl" placeholder="https://maps.google.com/..."></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title"><i class="ri-bank-card-line"></i> Kado Digital & Hadiah</div>
-      <div class="form-grid">
-        <div class="fg"><label>Nama Bank 1</label><input type="text" id="set-rek1bank" placeholder="BCA"></div>
-        <div class="fg"><label>Nomor Rekening 1</label><input type="text" id="set-rek1no" placeholder="1234567890"></div>
-        <div class="fg form-full"><label>Atas Nama 1</label><input type="text" id="set-rek1nama" placeholder="Nama Pemilik Rekening"></div>
-        <div class="fg"><label>Nama Bank 2</label><input type="text" id="set-rek2bank" placeholder="Mandiri"></div>
-        <div class="fg"><label>Nomor Rekening 2</label><input type="text" id="set-rek2no" placeholder="0987654321"></div>
-        <div class="fg form-full"><label>Atas Nama 2</label><input type="text" id="set-rek2nama" placeholder="Nama Pemilik Rekening"></div>
       </div>
     </div>
     <div class="card">
@@ -464,6 +436,18 @@ code{ background:#0a0a0a; padding:2px 6px; border-radius:4px; color:var(--gold);
       <button class="btn btn-wa" id="modal-wa-btn"><i class="ri-whatsapp-line"></i> Buka WhatsApp</button>
       <button class="btn btn-outline" onclick="copyMsg()"><i class="ri-clipboard-line"></i> Salin</button>
       <button class="btn btn-outline" onclick="document.getElementById('modal').classList.remove('show')"><i class="ri-close-line"></i> Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Dialog Konfirmasi Custom -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal" style="max-width:360px;text-align:center;">
+    <h3 id="confirm-title" style="margin-bottom:12px;">Konfirmasi</h3>
+    <div id="confirm-msg" style="color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.5;">Apakah Anda yakin?</div>
+    <div class="modal-actions" style="justify-content:center;gap:12px;">
+      <button class="btn btn-outline" id="confirm-cancel-btn">Batal</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Yakin</button>
     </div>
   </div>
 </div>
@@ -694,7 +678,7 @@ async function addGuest() {
 }
 
 async function deleteGuest(id) {
-  if (!window.confirm('Hapus tamu ini?')) return;
+  if (!(await customConfirm('Hapus Tamu', 'Apakah Anda yakin ingin menghapus data tamu ini?'))) return;
   try {
     const r = await api('deleteGuest', {id});
     if (r.ok) {
@@ -709,7 +693,7 @@ async function deleteGuest(id) {
 async function deleteSelected() {
   const ids = [...document.querySelectorAll('.chk-row:checked')].map(c=>c.dataset.id);
   if (!ids.length) return;
-  if (!confirm(`Hapus ${ids.length} tamu?`)) return;
+  if (!(await customConfirm('Hapus Banyak', `Apakah Anda yakin ingin menghapus ${ids.length} tamu yang dipilih?`))) return;
   let ok = 0;
   for (const id of ids) {
     try {
@@ -722,11 +706,32 @@ async function deleteSelected() {
 }
 async function markSent(id) {
   const g = guests.find(x=>x.id===id);
-  if (!g) return;
+  if (!g || g.sent) return;
   g.sent = true;
   renderGuests(); renderStats();
   try { await api('updateStatus', {id, sent: true}); }
-  catch(e) { /* update lokal tetap tersimpan, sinkronisasi gagal */ }
+  catch(e) { /* ignore */ }
+}
+
+function quickCopy(id) {
+  const g = guests.find(x=>x.id===id);
+  if (!g) return;
+  const msg = buildMsg(g);
+  navigator.clipboard.writeText(msg).then(() => {
+    showToast('[v] Pesan disalin!');
+  }).catch(() => showToast('✗ Gagal menyalin'));
+}
+
+async function toggleSent(id) {
+  const g = guests.find(x=>x.id===id);
+  if (!g) return;
+  const newStatus = !g.sent;
+  g.sent = newStatus;
+  renderGuests(); renderStats();
+  try {
+    const r = await api('updateStatus', {id, sent: newStatus});
+    if (!r.ok) showToast('✗ Gagal update status di server');
+  } catch(e) { showToast('✗ Error: ' + e.message); }
 }
 
 // ====================================================
@@ -745,16 +750,12 @@ function applySettingsToForm(s) {
   const f = (id,v) => { const el=document.getElementById(id); if(el&&v!==undefined) el.value=v; };
   f('set-couple',s.couple); f('set-date',s.date); f('set-time',s.time); f('set-place',s.place);
   f('set-baseurl',s.baseUrl); f('set-mapsurl',s.mapsUrl);
-  f('set-rek1bank',s.rek1Bank); f('set-rek1no',s.rek1No); f('set-rek1nama',s.rek1Nama);
-  f('set-rek2bank',s.rek2Bank); f('set-rek2no',s.rek2No); f('set-rek2nama',s.rek2Nama);
   f('set-template',s.template||DEFAULT_TEMPLATE);
 }
 function getSettingsFromForm() {
   const g = id => document.getElementById(id)?.value||'';
   return { couple:g('set-couple'), date:g('set-date'), time:g('set-time'), place:g('set-place'),
     baseUrl:g('set-baseurl'), mapsUrl:g('set-mapsurl'),
-    rek1Bank:g('set-rek1bank'), rek1No:g('set-rek1no'), rek1Nama:g('set-rek1nama'),
-    rek2Bank:g('set-rek2bank'), rek2No:g('set-rek2no'), rek2Nama:g('set-rek2nama'),
     template:g('set-template') };
 }
 async function saveSettings() {
@@ -778,46 +779,6 @@ function resetTemplate() {
 // ====================================================
 //  RSVP
 // ====================================================
-
-// ====================================================
-//  UCAPAN & DOA Handlers
-// ====================================================
-let ucapanDataCache = [];
-
-async function loadUcapan() {
-  try {
-    const d = await api('getUcapanAll');
-    if (d.ok) {
-      ucapanDataCache = d.ucapan || [];
-      renderUcapan();
-    }
-  } catch (e) { showToast('Gagal memuat ucapan'); }
-}
-
-function renderUcapan() {
-  const list = document.getElementById('ucapan-list');
-  const query = document.getElementById('ucapan-search').value.toLowerCase();
-
-  const filtered = ucapanDataCache.filter(u => {
-    return (u.nama||'').toLowerCase().includes(query) || (u.ucapan||'').toLowerCase().includes(query);
-  });
-
-  if (!filtered.length) {
-    list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">Belum ada ucapan yang masuk atau tidak ditemukan.</div>';
-    return;
-  }
-
-  list.innerHTML = filtered.map(u => `
-    <div class="rsvp-row">
-      <div style="display:flex;align-items:center;gap:10px;width:100%;">
-        <strong style="flex:1;font-size:15px;color:var(--gold-light);">${esc(u.nama)}</strong>
-        <button class="btn btn-outline btn-icon" style="width:36px;height:36px;color:var(--red);border-color:rgba(255,77,77,0.2);" onclick="deleteUcapan('${u.id}')" title="Hapus Ucapan"><i class="ri-delete-bin-line"></i></button>
-      </div>
-      <div style="margin-top:4px;font-size:14px;color:var(--text);line-height:1.6;width:100%;background:rgba(255,255,255,0.01);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);">"${esc(u.ucapan)}"</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;width:100%;text-align:right;">— ${new Date(u.waktu).toLocaleString('id-ID')}</div>
-    </div>
-  `).join('');
-}
 
 // ====================================================
 //  PESAN WA
@@ -847,7 +808,7 @@ function quickSend(id) {
 async function bulkSend() {
   const ids=[...document.querySelectorAll('.chk-row:checked')].map(c=>c.dataset.id);
   if(!ids.length){showToast('⚠ Pilih minimal 1 tamu!');return;}
-  if(!confirm(`Buka ${ids.length} tab WA?`)) return;
+  if(!(await customConfirm('Kirim Pesan', `Buka ${ids.length} tab WhatsApp sekaligus?`))) return;
   ids.forEach((id,i)=>{
     const g=guests.find(x=>x.id===id); if(!g||!g.no) return;
     setTimeout(()=>{ window.open(waUrl(g.no,buildMsg(g)),'_blank'); markSent(g.id); }, i*700);
@@ -862,11 +823,16 @@ function closeModal(e) { if(e.target.id==='modal') document.getElementById('moda
 function getFiltered() {
   const q = document.getElementById('inp-search')?.value.toLowerCase() || '';
   const st = document.getElementById('sel-filter')?.value || 'all';
-  return guests.filter(g => {
+  let filtered = guests.filter(g => {
     const mq = g.nama.toLowerCase().includes(q);
     const ms = st === 'all' || (st === 'sent' ? g.sent : !g.sent);
     return mq && ms;
   });
+  // Urutkan: Jika tampil semua, yang "Belum Terkirim" (sent=false/undefined) tampil paling atas
+  if (st === 'all') {
+    filtered.sort((a, b) => (a.sent === b.sent ? 0 : a.sent ? 1 : -1));
+  }
+  return filtered;
 }
 function renderGuests() {
   if (!isConnected) return;
@@ -895,6 +861,8 @@ function renderGuests() {
       <td>${badge}</td>
       <td><div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-outline btn-sm" onclick="previewGuest('${g.id}')" title="Preview Pesan"><i class="ri-eye-line"></i></button>
+        <button class="btn btn-outline btn-sm" onclick="quickCopy('${g.id}')" title="Salin Pesan"><i class="ri-file-copy-line"></i></button>
+        <button class="btn btn-outline btn-sm" onclick="toggleSent('${g.id}')" title="${g.sent ? 'Tandai Belum Terkirim' : 'Tandai Terkirim'}"><i class="${g.sent ? 'ri-checkbox-line' : 'ri-checkbox-blank-line'}"></i></button>
         ${g.no ? `<button class="btn btn-wa btn-sm" onclick="quickSend('${g.id}')" title="Kirim Langsung"><i class="ri-whatsapp-line"></i></button>` : ''}
         <button class="btn btn-danger btn-sm" onclick="deleteGuest('${g.id}')" title="Hapus"><i class="ri-delete-bin-line"></i></button>
       </div></td>
@@ -903,11 +871,18 @@ function renderGuests() {
 }
 function renderStats() {
   const total=guests.length, sent=guests.filter(g=>g.sent).length, unsent=total-sent;
+  const pct = total ? Math.round(sent / total * 100) : 0;
   document.getElementById('stats-bar').innerHTML=`
+    <div style="grid-column: 1 / -1; display:flex; align-items:center; gap: 16px; background:var(--card); padding:16px; border-radius:12px; border:1px solid var(--border); margin-bottom: 8px;">
+      <div style="width:54px;height:54px;border-radius:50%;background:conic-gradient(#4ecc78 0% ${pct}%, #cc4e4e ${pct}% 100%); flex-shrink:0;"></div>
+      <div>
+        <div style="font-weight:600;font-size:16px;margin-bottom:6px;">${pct}% Undangan Terkirim</div>
+        <div style="font-size:13px;color:var(--muted);"><span style="color:#4ecc78;font-weight:500;">● ${sent} Terkirim</span> &nbsp; <span style="color:#cc4e4e;font-weight:500;">● ${unsent} Belum</span> &nbsp; (Total ${total})</div>
+      </div>
+    </div>
     <div class="stat-box"><span class="stat-val">${total}</span><span class="stat-lbl">Total Tamu</span></div>
     <div class="stat-box"><span class="stat-val" style="color:#4ecc78">${sent}</span><span class="stat-lbl">Terkirim</span></div>
-    <div class="stat-box"><span class="stat-val" style="color:#cc4e4e">${unsent}</span><span class="stat-lbl">Belum Kirim</span></div>
-    <div class="stat-box"><span class="stat-val">${total?Math.round(sent/total*100):0}%</span><span class="stat-lbl">Progress</span></div>`;
+    <div class="stat-box"><span class="stat-val" style="color:#cc4e4e">${unsent}</span><span class="stat-lbl">Belum Kirim</span></div>`;
 }
 
 // ====================================================
@@ -926,6 +901,16 @@ function nanoid(){
 }
 function resetForm(){ document.getElementById('inp-nama').value=''; document.getElementById('inp-no').value=''; }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function customConfirm(title, msg) {
+  return new Promise(resolve => {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    const overlay = document.getElementById('confirm-modal');
+    document.getElementById('confirm-cancel-btn').onclick = () => { overlay.classList.remove('show'); resolve(false); };
+    document.getElementById('confirm-ok-btn').onclick = () => { overlay.classList.remove('show'); resolve(true); };
+    overlay.classList.add('show');
+  });
+}
 function selectAll(){ document.querySelectorAll('.chk-row').forEach(c=>c.checked=true); updateBulkCount(); }
 function deselectAll(){ document.querySelectorAll('.chk-row').forEach(c=>c.checked=false); updateBulkCount(); }
 function toggleAll(el){ document.querySelectorAll('.chk-row').forEach(c=>c.checked=el.checked); updateBulkCount(); }
@@ -937,7 +922,6 @@ function switchTab(name,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active'); el.classList.add('active');
   if(name==='rsvp') loadRsvp();
-  if(name==='ucapan') loadUcapan();
 }
 
 // Alias untuk tombol bulk-bar
@@ -1126,26 +1110,13 @@ function renderRsvp() {
 })();
 /* --- MODERASI --- */
 async function deleteRsvp(idTamu){
-  if(!confirm('Hapus data RSVP ini?')) return;
+  if(!(await customConfirm('Hapus RSVP', 'Hapus data RSVP ini secara permanen?'))) return;
   try {
     const rd = await api('deleteRsvp', {idTamu});
     if(rd.ok){
       rsvpDataCache = rsvpDataCache.filter(r => r.idTamu !== idTamu);
       showToast('RSVP dihapus');
       renderRsvp();
-    } else {
-      showToast('✗ Gagal hapus: ' + (rd.msg || ''));
-    }
-  } catch(e) { showToast('✗ Error: ' + e.message); }
-}
-async function deleteUcapan(id){
-  if(!confirm('Hapus ucapan ini?')) return;
-  try {
-    const rd = await api('deleteUcapan', {id});
-    if(rd.ok){
-      ucapanDataCache = ucapanDataCache.filter(u => u.id !== id);
-      showToast('Ucapan dihapus');
-      renderUcapan();
     } else {
       showToast('✗ Gagal hapus: ' + (rd.msg || ''));
     }
